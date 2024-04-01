@@ -128,4 +128,13 @@ body {
 .signup-footer{
     display: flex;
     flex-direction: column;
+    p{
+        padding: 0 35px;
+    }
+}
+
+
+.error{
+    color: red;
+    font-size: 16px;
 }
