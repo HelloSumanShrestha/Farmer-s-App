@@ -1,7 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-export default function Earnings() {
+const Earnings = () => {
     return (
-        <div>Earnings</div>
-    )
-}
+        <div>
+            <h1>Earning Page</h1>
+        </div>
+    );
+};
+
+export default Earnings;

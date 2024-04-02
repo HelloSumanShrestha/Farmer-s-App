@@ -1,6 +1,6 @@
 import React from 'react';
 import "../css/Home.scss"
-import testData from '../constant/product';
+
 
 export default function Home({ products }) {
     return (
@@ -23,7 +23,7 @@ export default function Home({ products }) {
 
             <div className="home-main">
 
-                {testData.items.map((product, index) => (
+                {products && products.map((product, index) => (
 
                     <div key={index} className="product-card">
                         <img src={product.img} alt={product.name} />

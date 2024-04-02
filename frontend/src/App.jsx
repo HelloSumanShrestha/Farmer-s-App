@@ -7,30 +7,43 @@ import MyProjects from './dashboard/MyProjects'
 import Settings from './dashboard/Settings'
 import Login from './login-signup/Login'
 import Signup from "./login-signup/Signup"
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
+import testData from './constant/product';
+import { ToastContainer } from 'react-toastify';
+
 
 function App() {
 
-
-  const [products, setProducts] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [products, setProducts] = useState([...testData.items]);
 
   useEffect(() => {
-    console.log(products)
-  }, [products])
+    const userLoggedIn = localStorage.getItem('isLoggedIn')
+    if (userLoggedIn === 'true') {
+      setIsLoggedIn(true)
+    }
+  }, [])
 
   return (
     <>
-      <Sidebar />
-      <Routes>
-
-        <Route path='/' index element={<Home products={products} />} />
-        <Route path='/earnings' element={<Earnings />} />
-        <Route path='/settings' element={<Settings />} />
-        <Route path='/my-products' element={<MyProjects setProducts={setProducts} products={products} />} />
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/login' element={<Login />} />
-
-      </Routes>
+      <ToastContainer />
+      {isLoggedIn ? (
+        <>
+          <Sidebar />
+          <Routes>
+            <Route path='/' index element={<Home products={products} />} />
+            <Route path='/earnings' element={<Earnings />} />
+            <Route path='/settings' element={<Settings />} />
+            <Route path='/my-products' element={<MyProjects setProducts={setProducts} products={products} />} />
+          </Routes>
+        </>
+      ) : (
+        <Routes>
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+          <Route path='/*' element={<Navigate to="/login" />} />
+        </Routes>
+      )}
     </>
   )
 }
