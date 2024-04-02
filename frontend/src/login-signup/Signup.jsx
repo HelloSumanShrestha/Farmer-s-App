@@ -27,10 +27,10 @@ export default function Signup() {
     };
 
     const handleSubmit = (e) => {
-
-        setErrors("")
-
         e.preventDefault();
+        console.log("I am here\n")
+
+        setErrors({});
 
         const errors = {};
         if (!fullName.trim()) {
@@ -57,7 +57,33 @@ export default function Signup() {
             setErrors(errors);
             return;
         }
+
+        // Send POST request to backend
+        fetch('http://127.0.0.1:8000/signup/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: fullName,
+                email,
+                password,
+            }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     };
+
 
     return (
         <div className="main">
@@ -114,7 +140,7 @@ export default function Signup() {
                         {errors.password && <span className="error">{errors.password}</span>}
                     </div>
                     <div className="signup-footer">
-                        <button className="signup-btn">Create Account</button>
+                        <button className="signup-btn" onClick={handleSubmit}>Create Account</button>
                         <p>
                             Already have an account?{' '}
                             <span className="signup-to-login">Sign in</span>
