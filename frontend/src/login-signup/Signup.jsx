@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import image from '../assets/images.png';
 import './Signup.scss';
+import { Link, useNavigate } from 'react-router-dom';
+import users from '../constant/users';
 
 export default function Signup() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
-    const [dob, setDob] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     const handleFullNameChange = (e) => {
         setFullName(e.target.value);
@@ -27,10 +29,9 @@ export default function Signup() {
     };
 
     const handleSubmit = (e) => {
-
-        setErrors("")
-
         e.preventDefault();
+
+        setErrors({});
 
         const errors = {};
         if (!fullName.trim()) {
@@ -40,9 +41,6 @@ export default function Signup() {
             errors.email = 'Please enter your email';
         } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
             errors.email = 'Please enter a valid email';
-        }
-        if (!dob.trim()) {
-            errors.dob = 'Please enter your date of birth';
         }
         if (!username.trim()) {
             errors.username = 'Please enter your username';
@@ -57,6 +55,15 @@ export default function Signup() {
             setErrors(errors);
             return;
         }
+
+        // Create a new user object
+        const newUser = { username, password };
+
+        // Add the new user to the users constant
+        users.all.push(newUser);
+
+        // Redirect to the login page
+        navigate('/login');
     };
 
     return (
@@ -92,7 +99,6 @@ export default function Signup() {
                         />
                         {errors.email && <span className="error">{errors.email}</span>}
 
-
                         <label htmlFor="username">Username</label>
                         <input
                             type="text"
@@ -114,10 +120,10 @@ export default function Signup() {
                         {errors.password && <span className="error">{errors.password}</span>}
                     </div>
                     <div className="signup-footer">
-                        <button className="signup-btn">Create Account</button>
+                        <button className="signup-btn" onClick={handleSubmit}>Create Account</button>
                         <p>
                             Already have an account?{' '}
-                            <span className="signup-to-login">Sign in</span>
+                            <Link to="/login" className="signup-to-login">Sign in</Link>
                         </p>
                     </div>
                 </form>
