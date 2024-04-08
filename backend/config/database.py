@@ -8,6 +8,9 @@ client = MongoClient(MONGODB_URI)
 
 # Get the user_db database
 db = client.user_db
+db = client.item_db
 
 # Get the usersdata_collection collection
 collection_name = db["user_collection"]
+product_name = db["product_collection"]
+cart_items = db["cart_items"]
