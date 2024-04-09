@@ -93,45 +93,32 @@ def get_seller(seller_id: str):
     seller = collection_name.find_one({"Seller_id": seller_id})
     return seller
     
+from fastapi import HTTPException
+
 @router.post("/update_items")
 async def update_items(items_data: Update_items):
     try:
-        product = product_name.find_one({"Product Name": items_data.product_name})
+
+        product = product_name.find_one({"Product ID": items_data.product_id, "Seller ID": items_data.seller_id})
 
         if product is None:
-
             raise HTTPException(status_code=404, detail="The product does not exist")
-        else:
 
-            existing_quantity = product["Quantity"]
-            new_quantity = existing_quantity + items_data.quantity
+        product_name.update_one(
+            {"Product ID": items_data.product_id, "Seller ID": items_data.seller_id},
+            {"$set": {"Quantity": items_data.quantity}}
+        )
 
-            product_name.update_one(
-                {"Product Name": items_data.product_name},
-                {"$set": {"Quantity": new_quantity}}
-            )
-
-            existing_seller_ids = product.get("Seller Id", "")
-            new_seller_ids = f"{existing_seller_ids},{items_data.seller_id}" if existing_seller_ids else items_data.seller_id
-
-            product_name.update_one(
-                {"Product Name": items_data.product_name},
-                {"$set": {"Seller Id": new_seller_ids}}
-            )
-
-            existing_price = product.get("Price", "")
-            new_price = f"{existing_price},{items_data.price}" if existing_price else items_data.price
-
-            product_name.update_one(
-                {"Product Name": items_data.product_name},
-                {"$set": {"Price": new_price}}
-            )
+        product_name.update_one(
+            {"Product ID": items_data.product_id, "Seller ID": items_data.seller_id},
+            {"$set": {"Price": items_data.price}}
+        )
 
         return {"message": "Item updated successfully"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
 @router.post("/delete_product")
 def delete_product(items_data: Delete_product):
     try:
