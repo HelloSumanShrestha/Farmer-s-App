@@ -4,5 +4,5 @@ from datetime import date
 class Update_items(BaseModel):
     seller_id: str
     price: float
-    product_name: str
+    product_id: str
     quantity: int

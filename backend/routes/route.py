@@ -4,10 +4,16 @@ from models.login import Login
 from models.add_items import Add_items
 from models.update_items import Update_items
 from models.delete_product import Delete_product
+from models.forgot_password import Forgot_password
+from models.otp import Otp
+from models.update_password import Update_password
 from config.database import collection_name
 from config.database import product_name
 from schema.schemas import list_serial, individual_serial_item,list_serial_items
 import uuid  
+import random
+import smtplib
+from email.mime.text import MIMEText
 
 router = APIRouter()
 
@@ -86,11 +92,6 @@ def add_items(items_data: Add_items):
 def get_seller(seller_id: str):
     seller = collection_name.find_one({"Seller_id": seller_id})
     return seller
-
-def generate_product_id():
-
-    pass
-
     
 @router.post("/update_items")
 async def update_items(items_data: Update_items):
@@ -153,3 +154,79 @@ def get_product(product_id: str, seller_id: str):
 def delete_product_from_database(product_id: str, seller_id: str):
     product_name.delete_one({"Product ID": product_id, "Seller ID": seller_id})
 
+@router.post("/forgot_password")
+def forgot_password(items_data: Forgot_password):
+    try:
+
+        user = get_user_by_email(items_data.email)
+        if user is None:
+            raise HTTPException(status_code=404, detail="Email not found in the database")
+
+        otp = generate_otp()
+
+        update_otp(items_data.email, otp)
+
+        send_otp_to_email(items_data.email, otp)
+
+        return {"message": "OTP sent successfully"}
+
+    except Exception as e:
+        return {"error": str(e)}
+
+def get_user_by_email(email: str):
+    user = collection_name.find_one({"email": email})
+    return user
+
+def generate_otp():
+
+    return str(random.randint(1000, 9999))
+
+def update_otp(email: str, otp: str):
+    
+    collection_name.update_one({"email": email}, {"$set": {"otp": otp}})
+def send_otp_to_email(email: str, otp: str):
+
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587
+    sender_email = "saajhabari@gmail.com"
+    sender_password = "jzrsukermuevwgcv"
+    receiver_email = email
+
+    message = MIMEText(f'Your OTP is: {otp}')
+
+    message['Subject'] = 'OTP for password reset'
+    message['From'] = sender_email
+    message['To'] = receiver_email
+
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, receiver_email, message.as_string())
+
+@router.post("/otp")
+def verify_otp(items_data: Otp):
+  
+    user_data = collection_name.find_one({"email": items_data.email})
+    if user_data:
+       
+        if user_data.get("otp") == items_data.otp:
+            return {"message": "OTP verified successfully"}
+        else:
+            raise HTTPException(status_code=400, detail="Invalid OTP")
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+@router.post("/update_password")
+def update_password(items_data: Update_password):
+  
+    user_data = collection_name.find_one({"email": items_data.email})
+    if user_data:
+        
+        if user_data.get("otp") == items_data.otp:
+        
+            collection_name.update_one({"email": items_data.email}, {"$set": {"password": items_data.new_password}})
+            return {"message": "Password updated successfully"}
+        else:
+            raise HTTPException(status_code=400, detail="Invalid OTP")
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
