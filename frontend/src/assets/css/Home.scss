@@ -1,0 +1,17 @@
+.home-container{
+    width: calc(100% - 250px);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.home-main{
+    width: 90%;
+    height: calc(100% - 250px);
+    overflow-y: scroll;
+
+    margin: 20px auto;
+
+    display: flex;
+    flex-wrap: wrap;
+}

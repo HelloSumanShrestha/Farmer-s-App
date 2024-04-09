@@ -1,0 +1,110 @@
+/* AddProduct container */
+.add-product-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* AddProduct form container */
+.add-product-form-container {
+    width: 400px;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* AddProduct form */
+.add-product-form {
+    display: flex;
+    flex-direction: column;
+}
+/* AddProduct header */
+.add-product-header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold; /* Make the header text bold */
+}
+
+/* AddProduct footer */
+.cancel-btn,
+.add-product-btn {
+    padding: 8px 16px; /* Increase button padding for a bigger button */
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.add-product-btn {
+    background-color: #2ecc71; /* Green accent color */
+    color: #fff;
+}
+
+.add-product-btn:hover {
+    background-color: #27ae60; /* Darker shade of green */
+}
+
+/* AddProduct text fields */
+.add-product-textfields {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.add-product-textfields label {
+    margin-bottom: 5px;
+}
+
+.add-product-textfields input[type="text"],
+.add-product-textfields input[type="number"],
+.add-product-textfields input[type="file"] {
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.add-product-textfields input[type="file"] {
+    border: none;
+    padding: 0;
+}
+
+.add-product-image-preview {
+    margin-top: 10px;
+    max-width: 100%;
+}
+
+/* AddProduct footer */
+.add-product-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cancel-btn,
+.add-product-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background-color: #ccc;
+    color: #fff;
+}
+
+.add-product-btn {
+    background-color: #2ecc71; /* Green accent color */
+    color: #fff;
+}
+
+.add-product-btn:hover {
+    background-color: #27ae60; /* Darker shade of green */
+}

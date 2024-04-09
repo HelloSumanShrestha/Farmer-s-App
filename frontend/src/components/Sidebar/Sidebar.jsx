@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import './Sidebar.scss';
+
+import "../../assets/css/Sidebar.scss"
 
 export default function Sidebar() {
     const location = useLocation();

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import image from "../assets/images.png";
-import './Login.scss';
-import users from "../constant/users";
+import users from "../../constant/users";
 import { useNavigate, Link } from 'react-router-dom';
+import './Login.scss';
+import image from "../../assets/images.png"
+
 
 export default function Login({ setIsLoggedIn }) {
     const [username, setUsername] = useState("");

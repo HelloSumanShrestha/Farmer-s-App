@@ -1,0 +1,34 @@
+/* MyProducts container */
+.my-products-container {
+    width: calc(100% - 250px);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Add product button */
+.add-product-button {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #2ecc71; /* Green accent color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+.add-product-button:hover {
+    background-color: #27ae60; /* Darker shade of green */
+}
+
+/* MyProducts main content */
+.my-products-main {
+    width: 90%;
+    overflow-y: scroll;
+
+    margin: 20px auto;
+
+    display: flex;
+    flex-wrap: wrap;
+}

@@ -1,0 +1,30 @@
+/* Earnings container */
+.earning-container {
+    width: calc(100% - 250px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // padding: 20px;
+}
+
+/* Earnings main content */
+.earning-main {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Earnings main content heading */
+.earning-main h1 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Earnings main content details */
+.earning-main p {
+    margin-bottom: 10px;
+}

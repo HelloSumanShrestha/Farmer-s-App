@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react'
-import './App.css'
-import Sidebar from './Sidebar/Sidebar'
-import Earnings from './dashboard/Earnings'
-import Home from './dashboard/Home'
-import MyProjects from './dashboard/MyProjects'
-import Settings from './dashboard/Settings'
-import Login from './login-signup/Login'
-import Signup from "./login-signup/Signup"
-import { Route, Routes, Navigate } from 'react-router-dom'
-import testData from './constant/product';
-import { ToastContainer } from 'react-toastify';
 
+import { Route, Routes, Navigate } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify';
+import testData from './constant/product';
+
+import Home from './pages/Home';
+import Earnings from "./pages/Earnings"
+import Sidebar from './components/Sidebar/Sidebar';
+import Settings from "./pages/Settings"
+import MyProducts from './pages/MyProducts';
+
+import Signup from "./pages/login-signup/Signup"
+import Login from "./pages/login-signup/Login"
+
+import "./assets/css/App.scss"
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [products, setProducts] = useState([...testData.items]);
 
   useEffect(() => {
@@ -34,7 +37,7 @@ function App() {
             <Route path='/' index element={<Home products={products} />} />
             <Route path='/earnings' element={<Earnings />} />
             <Route path='/settings' element={<Settings />} />
-            <Route path='/my-products' element={<MyProjects setProducts={setProducts} products={products} />} />
+            <Route path='/my-products' element={<MyProducts setProducts={setProducts} products={products} />} />
           </Routes>
         </>
       ) : (

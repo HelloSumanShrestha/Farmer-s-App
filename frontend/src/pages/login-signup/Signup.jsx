@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import image from '../assets/images.png';
 import './Signup.scss';
 import { Link, useNavigate } from 'react-router-dom';
-import users from '../constant/users';
+import users from '../../constant/users';
+import image from "../../assets/images.png"
 
 export default function Signup() {
     const [fullName, setFullName] = useState('');
@@ -56,13 +56,10 @@ export default function Signup() {
             return;
         }
 
-        // Create a new user object
         const newUser = { username, password };
 
-        // Add the new user to the users constant
         users.all.push(newUser);
 
-        // Redirect to the login page
         navigate('/login');
     };
 
@@ -110,6 +107,16 @@ export default function Signup() {
                         {errors.username && <span className="error">{errors.username}</span>}
 
                         <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                        />
+                        {errors.password && <span className="error">{errors.password}</span>}
+
+                        <label htmlFor="password">Confirm Password</label>
                         <input
                             type="password"
                             id="password"
