@@ -6,6 +6,7 @@ class User(BaseModel):
     email: str
     username: str
     password: str
+    user_type: str
 
 def individual_serial(user) -> dict:
     return {
@@ -13,6 +14,7 @@ def individual_serial(user) -> dict:
         "email": user.email,
         "username": user.username,
         "password": user.password,   
+        "user_type": user.user_type,   
     }
 
 def list_serial(users) -> list:
@@ -36,7 +38,8 @@ class Add_items(BaseModel):
     seller_id: str
     price: float
     product_name: str
-    description: str
+    category: str
+    img_url: str
     expiry_date: date
     manufacture_date: date
     quantity: int
@@ -46,26 +49,12 @@ def individual_serial_item(item: Add_items) -> dict:
         "seller_id": item.seller_id,
         "price": item.price,
         "product_name": item.product_name,
-        "description": item.description,
-        "expiry_date": str(item.expiry_date),  # Convert date to string
-        "manufacture_date": str(item.manufacture_date),  # Convert date to string
+        "category": item.category,
+        "img_url": item.img_url,
+        "expiry_date": str(item.expiry_date),  
+        "manufacture_date": str(item.manufacture_date),  
         "quantity": item.quantity,
     }
 
 def list_serial_items(items: list) -> list:
     return [individual_serial(item) for item in items]
-
-class Add_to_cart(BaseModel):
-    username: str
-    product_name: str
-    quantity: int
-
-def individual_serial_cart(cart_item) -> dict:
-    return {
-        "username": cart_item.username,
-        "product_name": cart_item.product_name,
-        "quantity": cart_item.quantity
-    }
-
-def list_serial_cart(cart_items) -> list:
-    return [individual_serial_cart(cart_item) for cart_item in cart_items]

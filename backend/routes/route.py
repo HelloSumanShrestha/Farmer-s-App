@@ -3,11 +3,11 @@ from models.users import User
 from models.login import Login
 from models.add_items import Add_items
 from models.update_items import Update_items
-from models.add_to_cart import Add_to_cart
+from models.delete_product import Delete_product
 from config.database import collection_name
 from config.database import product_name
-from config.database import cart_items
-from schema.schemas import list_serial, individual_serial_item, individual_serial_cart,list_serial_items,list_serial_cart
+from schema.schemas import list_serial, individual_serial_item,list_serial_items
+import uuid  
 
 router = APIRouter()
 
@@ -15,23 +15,26 @@ router = APIRouter()
 async def root():
     return {"message": "Welcome to Farmer's App"}
 
-# Get Request Method
-@router.get("/create_user")
-async def Create():
-    return {"Farmer's": "App"}
-
-# POST Request Method
 @router.post("/signup")
 async def sign_up(user: User):
     try:
-
         existing_user = collection_name.find_one({"$or": [{"username": user.username}, {"email": user.email}]})
         if existing_user:
             raise HTTPException(status_code=400, detail="Username or email already exists")
-        
-        # If username and email don't exist, insert the new user into the database
-        result = collection_name.insert_one(user.dict())
+
+        user_id = str(uuid.uuid4())  
+
+        if user.usertype.lower() == "seller":
+            seller_id = str(uuid.uuid4()) 
+            user_data = user.dict()
+            user_data["Seller_id"] = seller_id
+        else:
+            user_data = user.dict()
+            user_data["user_id"] = user_id
+
+        result = collection_name.insert_one(user_data)
         return {"message": "User created successfully", "id": str(result.inserted_id)}
+    
     except Exception as e:
         return {"error": str(e)}
 
@@ -47,70 +50,77 @@ async def login(login_data: Login):
             return {"message": "Login successful"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-# Define your route
+
 @router.post("/add_items")
-async def add_items(items_data: Add_items):
+def add_items(items_data: Add_items):
     try:
-        # Convert date objects to strings
+
+        seller = get_seller(items_data.seller_id)
+        if seller is None or seller.get('usertype') != 'Seller':
+            raise HTTPException(status_code=404, detail="Seller not found or is not a seller")
+
         expiry_date_str = str(items_data.expiry_date)
         manufacture_date_str = str(items_data.manufacture_date)
 
-        # Construct the item data dictionary
+        product_id = str(uuid.uuid4())
+
         item_data = {
-            "Seller Id": items_data.seller_id,
+            "Product ID": product_id,
+            "Seller ID": items_data.seller_id,
             "Price": items_data.price,
             "Product Name": items_data.product_name,
-            "Description": items_data.description,
+            "Category": items_data.category,
+            "Img URL": items_data.img_url,
             "Expiry Date": expiry_date_str,
             "Manufacture Date": manufacture_date_str,
             "Quantity": items_data.quantity
         }
 
-        # Insert the item data into the database
         result = product_name.insert_one(item_data)
         
         return {"message": "Item added successfully", "id": str(result.inserted_id)}
     
-    # Handle exceptions
     except Exception as e:
         return {"error": str(e)}
+
+def get_seller(seller_id: str):
+    seller = collection_name.find_one({"Seller_id": seller_id})
+    return seller
+
+def generate_product_id():
+
+    pass
+
     
 @router.post("/update_items")
 async def update_items(items_data: Update_items):
     try:
-        # Check if the product exists in the database
         product = product_name.find_one({"Product Name": items_data.product_name})
 
         if product is None:
-            # If the product does not exist, raise an HTTPException
+
             raise HTTPException(status_code=404, detail="The product does not exist")
         else:
-            # If the product exists, update the quantity
+
             existing_quantity = product["Quantity"]
             new_quantity = existing_quantity + items_data.quantity
 
-            # Update the quantity in the database
             product_name.update_one(
                 {"Product Name": items_data.product_name},
                 {"$set": {"Quantity": new_quantity}}
             )
 
-            # Fetch existing seller IDs and append the new one
             existing_seller_ids = product.get("Seller Id", "")
             new_seller_ids = f"{existing_seller_ids},{items_data.seller_id}" if existing_seller_ids else items_data.seller_id
 
-            # Update the seller IDs in the database
             product_name.update_one(
                 {"Product Name": items_data.product_name},
                 {"$set": {"Seller Id": new_seller_ids}}
             )
 
-            # Fetch existing price and append the new one
             existing_price = product.get("Price", "")
             new_price = f"{existing_price},{items_data.price}" if existing_price else items_data.price
 
-            # Update the price in the database
             product_name.update_one(
                 {"Product Name": items_data.product_name},
                 {"$set": {"Price": new_price}}
@@ -121,42 +131,25 @@ async def update_items(items_data: Update_items):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# @router.post("/add_to_cart")
-# async def add_to_cart(items_data: Add_to_cart):
-#     try:
-#         # Check if the user exists in the database
-#         user = collection_name.find_one({"username": items_data.username})
-#         if user is None:
-#             raise HTTPException(status_code=404, detail="User does not exist")
-        
-#         # Check if the product exists in the database
-#         product = product_name.find_one({"Product Name": items_data.product_name})
-#         if product is None:
-#             raise HTTPException(status_code=404, detail="The product does not exist")
-        
-#         # Check if the quantity of the product is greater than 0
-#         if product["Quantity"] <= 0:
-#             raise HTTPException(status_code=400, detail="Product is out of stock")
+@router.post("/delete_product")
+def delete_product(items_data: Delete_product):
+    try:
 
-#         # Update product quantity in the product_collection
-#         new_quantity = product["Quantity"] - items_data.quantity
-#         product_name.update_one(
-#             {"Product Name": items_data.product_name},
-#             {"$set": {"Quantity": new_quantity}}
-#         )
+        product = get_product(items_data.product_id, items_data.seller_id)
+        if product is None:
+            raise HTTPException(status_code=404, detail="Product not found or does not belong to the specified seller")
 
-#         # Construct the item data dictionary for the cart
-#         cart_item_data = {
-#             "username": items_data.username,
-#             "product_name": items_data.product_name,
-#             "quantity": items_data.quantity,
-#             "price": product["Price"]
-#         }
+        delete_product_from_database(items_data.product_id, items_data.seller_id)
 
-#         # Insert the item into the cart_items collection
-#         result = cart_items.insert_one(cart_item_data)
+        return {"message": "Product deleted successfully"}
 
-#         return {"message": "Item added to cart successfully"}
+    except Exception as e:
+        return {"error": str(e)}
 
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+def get_product(product_id: str, seller_id: str):
+    product = product_name.find_one({"Product ID": product_id, "Seller ID": seller_id})
+    return product
+
+def delete_product_from_database(product_id: str, seller_id: str):
+    product_name.delete_one({"Product ID": product_id, "Seller ID": seller_id})
+
