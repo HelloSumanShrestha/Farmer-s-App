@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from bson import ObjectId
 from models.users import User
 from models.login import Login
@@ -8,9 +8,13 @@ from models.delete_product import Delete_product
 from models.forgot_password import Forgot_password
 from models.otp import Otp
 from models.update_password import Update_password
+from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
 from config.database import collection_name
 from config.database import product_name
 from schema.schemas import list_serial, individual_serial_item, list_serial_items
+from typing import List
+import json
 import uuid
 import random
 import smtplib
@@ -53,7 +57,6 @@ async def get_user_id(username: str):
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
 
-        # Check if the user is a seller or a regular user
         if "Seller_id" in user:
             return {"seller_id": user["Seller_id"], "user_type": "seller"}
         else:
@@ -105,15 +108,44 @@ async def add_items(items_data: Add_items):
 
     except Exception as e:
         return {"error": str(e)}
-
+    
 def get_seller(seller_id: str):
     seller = collection_name.find_one({"Seller_id": seller_id})
     return seller
 
+@router.get("/product/{prdct_name}")
+def get_product_info(prdct_name: str):
+    try:
+
+        products = product_name.find({"Product Name": prdct_name})
+
+        products_info = []
+
+        for product in products:
+            products_info.append({
+                "product_id": str(product["_id"]),
+                "seller_id": str(product["Seller ID"]),
+                "price": product["Price"],
+                "product_name": product["Product Name"],
+                "category": product["Category"],
+                "img_url": product["Img URL"],
+                "expiry_date": str(product["Expiry Date"]),
+                "manufacture_date": str(product["Manufacture Date"]),
+                "quantity": product["Quantity"]
+            })
+
+        if not products_info:
+            raise HTTPException(status_code=404, detail="Products not found")
+
+        return products_info
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.put("/update_items")
 async def update_items(items_data: Update_items):
     try:
-        # Use PUT for updating items
+
         product = product_name.find_one({"Product ID": items_data.product_id, "Seller ID": items_data.seller_id})
 
         if product is None:
@@ -137,7 +169,7 @@ async def update_items(items_data: Update_items):
 @router.delete("/delete_product")
 async def delete_product(items_data: Delete_product):
     try:
-        # Use DELETE for deleting items
+
         product = get_product(items_data.product_id, items_data.seller_id)
         if product is None:
             raise HTTPException(status_code=404, detail="Product not found or does not belong to the specified seller")
