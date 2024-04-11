@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 from bson import ObjectId
 from models.users import User
 from models.login import Login
@@ -8,10 +8,12 @@ from models.delete_product import Delete_product
 from models.forgot_password import Forgot_password
 from models.otp import Otp
 from models.update_password import Update_password
+from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
 from config.database import collection_name
 from config.database import product_name
 from schema.schemas import list_serial, individual_serial_item, list_serial_items
-import uuid  
+import uuid
 import random
 import smtplib
 from email.mime.text import MIMEText
@@ -50,11 +52,23 @@ async def sign_up(user: User):
         return {"message": "User created successfully", "id": str(result.inserted_id)}
     
     except Exception as e:
-        # Handle unexpected errors
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
-        )
+        return {"error": str(e)}
+    
+@router.get("/user_id/{username}")
+async def get_user_id(username: str):
+    try:
+        user = collection_name.find_one({"username": username})
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Check if the user is a seller or a regular user
+        if "Seller_id" in user:
+            return {"seller_id": user["Seller_id"], "user_type": "seller"}
+        else:
+            return {"user_id": str(user["user_id"]), "user_type": "consumer"}
+
+    except Exception as e:
+        return {"error": str(e)}
 
 @router.post("/login")
 async def login(login_data: Login):
@@ -100,16 +114,16 @@ async def add_items(items_data: Add_items):
         return {"message": "Item added successfully", "id": str(result.inserted_id)}
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        return {"error": str(e)}
 
 def get_seller(seller_id: str):
     seller = collection_name.find_one({"Seller_id": seller_id})
     return seller
-    
-@router.post("/update_items")
+
+@router.put("/update_items")
 async def update_items(items_data: Update_items):
     try:
-        # Use PUT for updating items
+
         product = product_name.find_one({"Product ID": items_data.product_id, "Seller ID": items_data.seller_id})
 
         if product is None:
@@ -133,7 +147,7 @@ async def update_items(items_data: Update_items):
 @router.delete("/delete_product")
 async def delete_product(items_data: Delete_product):
     try:
-        # Use DELETE for deleting items
+
         product = get_product(items_data.product_id, items_data.seller_id)
         if product is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found or does not belong to the specified seller")
