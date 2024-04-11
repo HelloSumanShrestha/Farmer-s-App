@@ -24,10 +24,25 @@
     transition: background-color 0.3s;
 }
 
-.sidebar-links:hover {
-    background-color: #2ecc7072;
+.nav-link-active {
+    background-color: #3D9769;
+    font-weight: 600;
+    color: #fff;
+
 }
 
-.nav-link-active {
-    background-color: #2ecc71;
+.nav-link{   
+    &:hover{
+        background-color: #2ecc7072;
+    }
+}
+h1{
+    font-size: 1.5rem;
+    margin: 12px 0;
+}
+
+a{
+    display: flex;
+    align-items: center;
+    padding-left:15px ;
 }

@@ -10,6 +10,7 @@
 
 .header-text {
     font-size: 1.5rem;
+    font-weight: 600;
 }
 
 .header-user {
@@ -33,4 +34,12 @@
 
 .header-username {
     font-size: 1rem;
+}
+
+
+.base-MenuButton-root{
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
 }

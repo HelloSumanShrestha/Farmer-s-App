@@ -1,42 +1,56 @@
 import React, { useState } from 'react';
-import users from "../../constant/users";
 import { useNavigate, Link } from 'react-router-dom';
-import './Login.scss';
-import image from "../../assets/images.png"
+import { toast, ToastContainer } from 'react-toastify';
 
+import './Login.scss';
+import 'react-toastify/dist/ReactToastify.css';
+
+import image from "../../assets/images.png"
 
 export default function Login({ setIsLoggedIn }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [usernameError, setUsernameError] = useState("");
-    const [passwordError, setPasswordError] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = () => {
-        setUsernameError('');
-        setPasswordError('');
 
         if ('' === username) {
-            setUsernameError('Please enter your username');
+            toast.error('Please enter your username');
             return;
         }
 
         if ('' === password) {
-            setPasswordError('Please enter your password');
+            toast.error('Please enter your password');
             return;
         }
 
-        const user = users.all.find(user => user.username === username && user.password === password);
-        if (user) {
-            setIsLoggedIn(true);
-            navigate('/');
-        } else {
-            setUsernameError('Username or password is incorrect');
-        }
+        // handle login functionality for the seller
+
+        fetch("http://localhost:8000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ "username": username, "password": password })
+        }).then(
+            res => {
+                if (res.status === 200) {
+                    toast.success("Login Successful!")
+                    setTimeout(() => {
+                        setIsLoggedIn(true)
+                        navigate("/")
+                    }, 1500)
+                }
+                else {
+                    toast.error("Invalid password or username!")
+                }
+            }
+        )
     };
 
     return (
         <div className="main">
+            <ToastContainer />
             <div className="image-container">
                 <img src={image} alt="" />
             </div>
@@ -45,22 +59,20 @@ export default function Login({ setIsLoggedIn }) {
                 <div className="login-form">
                     <div className="login-header">
                         <p className='login-main-text'>Welcome back!</p>
-                        <p className='login-sub-text'>Login to explore marketplace</p>
+                        <p className='login-sub-text'>Login to manage your products</p>
                     </div>
                     <div className="login-textfields">
                         <label htmlFor="">Username</label>
                         <input type="text" placeholder='Enter your username' value={username} onChange={(e) => setUsername(e.target.value)} />
-                        <label className="errorLabel">{usernameError}</label>
 
                         <label htmlFor="">Password</label>
                         <input type="password" placeholder='Enter your password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                        <label className="errorLabel">{passwordError}</label>
 
                         <p className="forgot-password">Forgot Password?</p>
                     </div>
                     <div className="login-footer">
                         <button className='signin-btn' onClick={handleSubmit}>Sign in</button>
-                        <Link to={"/signup"}>
+                        <Link to={"/signup"} className='signup-redirect'>
                             <p>New to Sajha Baari? <span className='login-to-signup'>Signup now</span></p>
                         </Link>
                     </div>

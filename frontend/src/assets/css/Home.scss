@@ -7,11 +7,13 @@
 
 .home-main{
     width: 90%;
-    height: calc(100% - 250px);
+    height: calc(100% - 150px);
     overflow-y: scroll;
 
     margin: 20px auto;
 
     display: flex;
     flex-wrap: wrap;
+
+    justify-content: space-around;
 }

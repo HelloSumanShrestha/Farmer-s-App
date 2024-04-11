@@ -19,12 +19,17 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [products, setProducts] = useState([...testData.items]);
+  const [userId, setUserId] = useState({})
 
   useEffect(() => {
     const userLoggedIn = localStorage.getItem('isLoggedIn')
     if (userLoggedIn === 'true') {
       setIsLoggedIn(true)
     }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('userId', userId)
   }, [])
 
   return (
@@ -43,7 +48,8 @@ function App() {
       ) : (
         <Routes>
           <Route path='/signup' element={<Signup />} />
-          <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+          <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn} />}
+            setUserId={setUserId} />
           <Route path='/*' element={<Navigate to="/login" />} />
         </Routes>
       )}

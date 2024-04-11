@@ -134,7 +134,11 @@ body {
 }
 
 
-.error{
-    color: red;
-    font-size: 16px;
+.login-redirect{
+    display: flex;
+    margin: 12px 0;
+    
+    a{
+        font-size: 1rem;
+    }
 }

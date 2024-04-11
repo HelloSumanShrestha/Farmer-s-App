@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from bson import ObjectId
 from models.users import User
 from models.login import Login
@@ -11,11 +11,10 @@ from models.update_password import Update_password
 from config.database import collection_name
 from config.database import product_name
 from schema.schemas import list_serial, individual_serial_item, list_serial_items
-import uuid
+import uuid  
 import random
 import smtplib
 from email.mime.text import MIMEText
-
 
 router = APIRouter()
 
@@ -23,44 +22,39 @@ router = APIRouter()
 async def root():
     return {"message": "Welcome to Farmer's App"}
 
-@router.post("/signup")
+@router.post("/signup", status_code=status.HTTP_201_CREATED)
 async def sign_up(user: User):
     try:
+        # Check if the user already exists
         existing_user = collection_name.find_one({"$or": [{"username": user.username}, {"email": user.email}]})
         if existing_user:
-            raise HTTPException(status_code=400, detail="Username or email already exists")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username or email already exists"
+            )
 
-        user_id = str(uuid.uuid4())
+        user_id = str(uuid.uuid4())  
 
+        # Assign a unique seller ID if the user is a seller, else assign a user ID
         if user.usertype.lower() == "seller":
-            seller_id = str(uuid.uuid4())
+            seller_id = str(uuid.uuid4()) 
             user_data = user.dict()
             user_data["Seller_id"] = seller_id
+            user_type = "Seller"
         else:
-            user_data = user.dict()
             user_data["user_id"] = user_id
+            user_type = "Customer"
 
+        # Insert the new user into the database
         result = collection_name.insert_one(user_data)
         return {"message": "User created successfully", "id": str(result.inserted_id)}
-
-    except Exception as e:
-        return {"error": str(e)}
     
-@router.get("/user_id/{username}")
-async def get_user_id(username: str):
-    try:
-        user = collection_name.find_one({"username": username})
-        if user is None:
-            raise HTTPException(status_code=404, detail="User not found")
-
-        # Check if the user is a seller or a regular user
-        if "Seller_id" in user:
-            return {"seller_id": user["Seller_id"], "user_type": "seller"}
-        else:
-            return {"user_id": str(user["user_id"]), "user_type": "consumer"}
-
     except Exception as e:
-        return {"error": str(e)}
+        # Handle unexpected errors
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
 
 @router.post("/login")
 async def login(login_data: Login):
@@ -68,11 +62,13 @@ async def login(login_data: Login):
         user = collection_name.find_one({"username": login_data.username, "password": login_data.password})
 
         if user is None:
-            raise HTTPException(status_code=401, detail="Invalid username or password")
-        else:
-            return {"message": "Login successful"}
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
+        
+        return {"message": "Login successful"}, status.HTTP_200_OK
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
 
 @router.post("/add_items")
 async def add_items(items_data: Add_items):
@@ -80,7 +76,7 @@ async def add_items(items_data: Add_items):
         # Use POST for adding items
         seller = get_seller(items_data.seller_id)
         if seller is None or seller.get('usertype') != 'Seller':
-            raise HTTPException(status_code=404, detail="Seller not found or is not a seller")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Seller not found or is not a seller")
 
         expiry_date_str = str(items_data.expiry_date)
         manufacture_date_str = str(items_data.manufacture_date)
@@ -104,20 +100,20 @@ async def add_items(items_data: Add_items):
         return {"message": "Item added successfully", "id": str(result.inserted_id)}
 
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 def get_seller(seller_id: str):
     seller = collection_name.find_one({"Seller_id": seller_id})
     return seller
-
-@router.put("/update_items")
+    
+@router.post("/update_items")
 async def update_items(items_data: Update_items):
     try:
         # Use PUT for updating items
         product = product_name.find_one({"Product ID": items_data.product_id, "Seller ID": items_data.seller_id})
 
         if product is None:
-            raise HTTPException(status_code=404, detail="The product does not exist")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="The product does not exist")
 
         product_name.update_one(
             {"Product ID": items_data.product_id, "Seller ID": items_data.seller_id},
@@ -132,7 +128,7 @@ async def update_items(items_data: Update_items):
         return {"message": "Item updated successfully"}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.delete("/delete_product")
 async def delete_product(items_data: Delete_product):
@@ -140,14 +136,14 @@ async def delete_product(items_data: Delete_product):
         # Use DELETE for deleting items
         product = get_product(items_data.product_id, items_data.seller_id)
         if product is None:
-            raise HTTPException(status_code=404, detail="Product not found or does not belong to the specified seller")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found or does not belong to the specified seller")
 
         delete_product_from_database(items_data.product_id, items_data.seller_id)
 
         return {"message": "Product deleted successfully"}
 
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 def get_product(product_id: str, seller_id: str):
     product = product_name.find_one({"Product ID": product_id, "Seller ID": seller_id})
@@ -155,25 +151,24 @@ def get_product(product_id: str, seller_id: str):
 
 def delete_product_from_database(product_id: str, seller_id: str):
     product_name.delete_one({"Product ID": product_id, "Seller ID": seller_id})
-
+    
+    
 @router.post("/forgot_password")
 async def forgot_password(items_data: Forgot_password):
     try:
-        # Use POST for forgot password
+
         user = get_user_by_email(items_data.email)
         if user is None:
-            raise HTTPException(status_code=404, detail="Email not found in the database")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Email not found in the database")
 
         otp = generate_otp()
-
         update_otp(items_data.email, otp)
-
         send_otp_to_email(items_data.email, otp)
 
-        return {"message": "OTP sent successfully"}
+        return {"message": "OTP sent successfully"}, status.HTTP_200_OK
 
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 def get_user_by_email(email: str):
     user = collection_name.find_one({"email": email})
@@ -212,12 +207,12 @@ async def verify_otp(items_data: Otp):
             if user_data.get("otp") == items_data.otp:
                 return {"message": "OTP verified successfully"}
             else:
-                raise HTTPException(status_code=400, detail="Invalid OTP")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP")
         else:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.put("/update_password")
 async def update_password(items_data: Update_password):
@@ -229,9 +224,35 @@ async def update_password(items_data: Update_password):
                 collection_name.update_one({"email": items_data.email}, {"$set": {"password": items_data.new_password}})
                 return {"message": "Password updated successfully"}
             else:
-                raise HTTPException(status_code=400, detail="Invalid OTP")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP")
         else:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+@router.get("/products/{seller_id}")
+async def get_products_by_seller(seller_id: str):
+    try:
+        products = list(product_name.find({"Seller ID": seller_id}))
+        if not products:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No products found for the specified seller")
+        
+        return {"products": products}
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+@router.get("/all_products")
+async def get_all_products():
+    try:
+        all_products = list(product_name.find())
+        if not all_products:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No products found")
+        
+        return {"products": all_products}
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

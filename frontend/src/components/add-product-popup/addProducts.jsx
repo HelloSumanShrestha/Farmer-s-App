@@ -15,7 +15,6 @@ export default function AddProduct({ products, setProducts, setAddBtnActive }) {
     const handleChange = (e) => {
         const { name, value, type } = e.target;
 
-        // For file inputs, use 'files' property
         const val = type === 'file' ? e.target.files[0] : value;
 
         setFormData({ ...formData, [name]: val });
