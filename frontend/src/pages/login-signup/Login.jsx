@@ -35,7 +35,7 @@ export default function Login({ setIsLoggedIn }) {
         }).then(
             res => {
                 if (res.status === 200) {
-                    toast.success("Login Successful!")
+                    toast.success("Login Successful!", { autoClose: 2000 })
                     setTimeout(() => {
                         setIsLoggedIn(true)
                         navigate("/")

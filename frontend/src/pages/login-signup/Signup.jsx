@@ -76,17 +76,16 @@ export default function Signup() {
             },
             body: JSON.stringify(newUser)
         }).then(response => {
-            if (response.ok) {
+            if (response.status == 201) {
                 toast.success("Signup Successful! Redirecting...");
                 setTimeout(() => navigate('/login'), 2000);
-            } else {
-                if (response.status === 400) {
-                    response.json().then(data => {
-                        toast.error(data.detail || "Username or email already exists");
-                    });
-                } else {
-                    toast.error("Something went wrong, please try again.");
-                }
+            } else if (response.status === 400) {
+                response.json().then(data => {
+                    toast.error(data.detail || "Username or email already exists");
+                });
+            }
+            else {
+                toast.error("Something went wrong, please try again.");
             }
         }).catch(error => {
             toast.error("An error occurred while communicating with the server");

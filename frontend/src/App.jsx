@@ -17,7 +17,7 @@ import "./assets/css/App.scss"
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [products, setProducts] = useState([...testData.items]);
   const [userId, setUserId] = useState({})
 
