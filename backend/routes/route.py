@@ -24,7 +24,7 @@ router = APIRouter()
 async def root():
     return {"message": "Welcome to Farmer's App"}
 
-@router.post("/signup", status_code=status.HTTP_201_CREATED)
+@router.post("/signup")
 async def sign_up(user: User):
     try:
         # Check if the user already exists
@@ -36,11 +36,11 @@ async def sign_up(user: User):
             )
 
         user_id = str(uuid.uuid4())  
+        user_data = user.dict()
 
         # Assign a unique seller ID if the user is a seller, else assign a user ID
         if user.usertype.lower() == "seller":
             seller_id = str(uuid.uuid4()) 
-            user_data = user.dict()
             user_data["Seller_id"] = seller_id
             user_type = "Seller"
         else:
@@ -52,7 +52,7 @@ async def sign_up(user: User):
         return {"message": "User created successfully", "id": str(result.inserted_id)}
     
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
     
 @router.get("/user_id/{username}")
 async def get_user_id(username: str):
@@ -68,7 +68,7 @@ async def get_user_id(username: str):
             return {"user_id": str(user["user_id"]), "user_type": "consumer"}
 
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 @router.post("/login")
 async def login(login_data: Login):
@@ -81,7 +81,7 @@ async def login(login_data: Login):
         return {"message": "Login successful"}, status.HTTP_200_OK
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 
 @router.post("/add_items")
@@ -114,7 +114,7 @@ async def add_items(items_data: Add_items):
         return {"message": "Item added successfully", "id": str(result.inserted_id)}
 
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 def get_seller(seller_id: str):
     seller = collection_name.find_one({"Seller_id": seller_id})
@@ -142,7 +142,7 @@ async def update_items(items_data: Update_items):
         return {"message": "Item updated successfully"}
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 @router.delete("/delete_product")
 async def delete_product(items_data: Delete_product):
@@ -157,7 +157,7 @@ async def delete_product(items_data: Delete_product):
         return {"message": "Product deleted successfully"}
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 def get_product(product_id: str, seller_id: str):
     product = product_name.find_one({"Product ID": product_id, "Seller ID": seller_id})
@@ -182,7 +182,7 @@ async def forgot_password(items_data: Forgot_password):
         return {"message": "OTP sent successfully"}, status.HTTP_200_OK
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 def get_user_by_email(email: str):
     user = collection_name.find_one({"email": email})
@@ -226,7 +226,7 @@ async def verify_otp(items_data: Otp):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 @router.put("/update_password")
 async def update_password(items_data: Update_password):
@@ -243,7 +243,7 @@ async def update_password(items_data: Update_password):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
 @router.get("/products/{seller_id}")
@@ -256,7 +256,7 @@ async def get_products_by_seller(seller_id: str):
         return {"products": products}
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
 @router.get("/all_products")
@@ -269,4 +269,70 @@ async def get_all_products():
         return {"products": all_products}
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+@router.get("/products")
+async def get_products():
+    try:
+
+        products_cursor = product_name.find()
+
+        products = list(products_cursor)
+
+        if len(products) == 0:
+            raise HTTPException(status_code=404, detail="No products found")
+
+        product_info_list = []
+
+        for product in products:
+            product_info = {
+                "Product ID": product["Product ID"],
+                "Seller ID": product["Seller ID"],
+                "Price": product["Price"],
+                "Product Name": product["Product Name"],
+                "Category": product["Category"],
+                "Img URL": product["Img URL"],
+                "Expiry Date": product["Expiry Date"],
+                "Manufacture Date": product["Manufacture Date"],
+                "Quantity": product["Quantity"]
+            }
+            product_info_list.append(product_info)
+
+        return product_info_list
+
+    except Exception as e:
+
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/seller_products/{seller_id}")
+async def get_seller_products(seller_id: str):
+    try:
+
+        products_cursor = product_name.find({"Seller ID": seller_id})
+
+        seller_products = list(products_cursor)
+
+        if len(seller_products) == 0:
+            raise HTTPException(status_code=404, detail="No products found for the specified seller")
+
+        product_info_list = []
+
+        for product in seller_products:
+            product_info = {
+                "Product ID": product["Product ID"],
+                "Seller ID": product["Seller ID"],
+                "Price": product["Price"],
+                "Product Name": product["Product Name"],
+                "Category": product["Category"],
+                "Img URL": product["Img URL"],
+                "Expiry Date": product["Expiry Date"],
+                "Manufacture Date": product["Manufacture Date"],
+                "Quantity": product["Quantity"]
+            }
+            product_info_list.append(product_info)
+
+        return product_info_list
+
+    except Exception as e:
+
+        raise HTTPException(status_code=500, detail=str(e))
