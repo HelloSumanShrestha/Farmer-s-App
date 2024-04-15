@@ -59,7 +59,8 @@ async def get_user_id(username: str):
     try:
         user = collection_name.find_one({"username": username})
         if user is None:
-            raise HTTPException(status_code=404, detail="User not found")
+            # Return HTTP 404 status code if user is not found
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
         # Check if the user is a seller or a regular user
         if "Seller_id" in user:
@@ -67,8 +68,14 @@ async def get_user_id(username: str):
         else:
             return {"user_id": str(user["user_id"]), "user_type": "consumer"}
 
+    except HTTPException as e:
+        raise  # Re-raise HTTPExceptions to maintain the original status code and detail message
+
+    except KeyError:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="User data format error")
+
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.post("/login")
 async def login(login_data: Login):
@@ -78,7 +85,7 @@ async def login(login_data: Login):
         if user is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
         
-        return {"message": "Login successful"}, status.HTTP_200_OK
+        return {"message": "Login successful"}
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
@@ -245,32 +252,6 @@ async def update_password(items_data: Update_password):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-
-@router.get("/products/{seller_id}")
-async def get_products_by_seller(seller_id: str):
-    try:
-        products = list(product_name.find({"Seller ID": seller_id}))
-        if not products:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No products found for the specified seller")
-        
-        return {"products": products}
-
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-
-
-@router.get("/all_products")
-async def get_all_products():
-    try:
-        all_products = list(product_name.find())
-        if not all_products:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No products found")
-        
-        return {"products": all_products}
-
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-
 @router.get("/products")
 async def get_products():
     try:
@@ -336,3 +317,67 @@ async def get_seller_products(seller_id: str):
     except Exception as e:
 
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/category/{category_name}")
+async def get_products_by_category(category_name: str):
+    try:
+
+        products_cursor = product_name.find({"Category": category_name})
+
+        products = list(products_cursor)
+
+        if len(products) == 0:
+            raise HTTPException(status_code=404, detail="No products found for the specified category")
+
+        product_info_list = []
+
+        for product in products:
+            product_info = {
+                "Product ID": product["Product ID"],
+                "Seller ID": product["Seller ID"],
+                "Price": product["Price"],
+                "Product Name": product["Product Name"],
+                "Category": product["Category"],
+                "Img URL": product["Img URL"],
+                "Expiry Date": product["Expiry Date"],
+                "Manufacture Date": product["Manufacture Date"],
+                "Quantity": product["Quantity"]
+            }
+            product_info_list.append(product_info)
+
+        return product_info_list
+
+    except Exception as e:
+
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/items")
+async def read_items(skip: int = 0, limit: int = 10):
+    try:
+        products_cursor = product_name.find().skip(skip).limit(limit)
+        products = list(products_cursor)
+
+        if len(products) == 0:
+            raise HTTPException(status_code=404, detail="No products found")
+
+        product_info_list = []
+
+        for product in products:
+            product_info = {
+                "Product ID": product["Product ID"],
+                "Seller ID": product["Seller ID"],
+                "Price": product["Price"],
+                "Product Name": product["Product Name"],
+                "Category": product["Category"],
+                "Img URL": product["Img URL"],
+                "Expiry Date": product["Expiry Date"],
+                "Manufacture Date": product["Manufacture Date"],
+                "Quantity": product["Quantity"]
+            }
+            product_info_list.append(product_info)
+
+        return product_info_list
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
