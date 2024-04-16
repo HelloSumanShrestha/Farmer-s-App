@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+* {
+    font-family: Inter;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* for signup page */
+
+.main {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+}
+
+.image-container {
+    width: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+
+    // img {
+    //     width: 50%;
+    // }
+}
+
+.signup-form-container {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-form {
+    width: 450px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .signup-header {
+        margin: 16px 0px;
+    }
+
+    .signup-main-text {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 8px 0px;
+        padding: 0;
+    }
+
+    .signup-sub-text {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 8px 0px;
+        color: #00000062;
+    }
+
+    .signup-textfields {
+        display: flex;
+        gap: 12px;
+        flex-direction: column;
+
+        label {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+    }
+
+    input {
+        width: 350px;
+        height: 40px;
+        font-size: 1rem;
+        text-indent: 12px;
+        border-radius: 8px;
+        border: 1px solid #CDCDCD;
+        outline: none;
+    }
+
+    .signup-btn {
+        width: 350px;
+        height: 40px;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #fff;
+        background: #3D9769;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+
+        &:hover {
+            transition: all .25s;
+            background: #387668;
+        }
+    }
+
+    .signup-to-login {
+        color: #387668;
+
+        &:hover {
+            text-decoration: underline;
+            transition: all .25s ease-in-out;
+            cursor: pointer;
+        }
+    }
+
+    p {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .forgot-password {
+        text-align: end;
+        color: #00000062;
+
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+}
+
+.signup-footer{
+    display: flex;
+    flex-direction: column;
+    p{
+        padding: 0 35px;
+    }
+}
+
+
+.login-redirect{
+    display: flex;
+    margin: 12px 0;
+    
+    a{
+        font-size: 1rem;
+    }
+}

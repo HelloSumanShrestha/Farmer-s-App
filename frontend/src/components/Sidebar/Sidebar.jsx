@@ -19,15 +19,11 @@ export default function Sidebar() {
         <>
             <div className="sidebar-container">
 
-                <div className="sidebar-header">
-                    <h1>SAAJHA BAARI</h1>
-                </div>
-
                 <div className="sidebar-links-container">
 
                     <NavLink
-                        to="/"
-                        className={location.pathname === '/' ? 'nav-link-active' : 'nav-link'}
+                        to="/dashboard"
+                        className={location.pathname === '/dashboard' ? 'nav-link-active' : 'nav-link'}
                         onClick={() => handleNavLinkClick('/')}
                     >
                         <HomeIcon />
@@ -37,7 +33,7 @@ export default function Sidebar() {
                     </NavLink>
 
                     <NavLink
-                        to="/earnings"
+                        to="/dashboard/earnings"
                         className={location.pathname === '/earnings' ? 'nav-link-active' : 'nav-link'}
                         onClick={() => handleNavLinkClick('/earnings')}
                     >
@@ -49,7 +45,7 @@ export default function Sidebar() {
 
 
                     <NavLink
-                        to="/my-products"
+                        to="/dashboard/my-products"
                         className={location.pathname === '/my-products' ? 'nav-link-active' : 'nav-link'}
                         onClick={() => handleNavLinkClick('/my-products')}
                     >
@@ -60,7 +56,7 @@ export default function Sidebar() {
                     </NavLink>
 
                     <NavLink
-                        to="/settings"
+                        to="/dashboard/settings"
                         className={location.pathname === '/settings' ? 'nav-link-active' : 'nav-link'}
                         onClick={() => handleNavLinkClick('/settings')}
                     >

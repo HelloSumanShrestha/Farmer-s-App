@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import { Cloudinary } from "@cloudinary/url-gen";
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "./AddProducts.scss"
 
@@ -51,7 +50,7 @@ export default function AddProduct({ products, setProducts, setAddBtnActive }) {
 
             // Create a new product with the received image URL and other data
             const newProductData = {
-                seller_id: '174d1b39-c151-4d5e-8223-ab210f79ee47',
+                seller_id: localStorage.getItem("userId"),
                 price: productPrice,
                 product_name: productName,
                 category: productCategory,
@@ -62,7 +61,7 @@ export default function AddProduct({ products, setProducts, setAddBtnActive }) {
             };
 
             // Send the new product data to your backend
-            const addProductResponse = await fetch('http://localhost:8000/add_product', {
+            const addProductResponse = await fetch('http://localhost:8000/add_items', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,12 +70,14 @@ export default function AddProduct({ products, setProducts, setAddBtnActive }) {
             });
 
             if (!addProductResponse.ok) {
-                throw new Error('Failed to add product');
+                return toast.error('Failed to add product');
             }
 
-            const addedProductData = await addProductResponse.json();
-            setProducts([...products, addedProductData]);
-            setAddBtnActive(false);
+            setProducts([...products, newProductData])
+            toast.success('Product added successfully', { autoClose: 500 });
+            setTimeout(() => {
+                setAddBtnActive(false);
+            }, 2000)
             setFormData({
                 productName: '',
                 productCategory: '',
@@ -86,52 +87,57 @@ export default function AddProduct({ products, setProducts, setAddBtnActive }) {
                 expiryDate: '',
                 manufactureDate: '',
             });
-            toast.success('Product added successfully');
         } catch (error) {
             console.error('Error:', error);
             toast.error('Failed to add product');
         }
     };
 
+
     return (
-        <div className="add-product-container">
-            <div className="add-product-form-container">
-                <div className="add-product-form">
-                    <div className="add-product-header">
-                        <p className='add-product-main-text'>Add New Product</p>
-                    </div>
-                    <div className="add-product-textfields">
-                        <label htmlFor="productName">Product Name</label>
-                        <input type="text" name="productName" placeholder='Enter product name' value={formData.productName} onChange={handleChange} />
+        <>
+            <ToastContainer autoClose={500} />
+            <div className="add-product-container">
+                <div className="add-product-form-container">
+                    <div className="add-product-form">
+                        <div className="add-product-header">
+                            <p className='add-product-main-text'>Add New Product</p>
+                        </div>
+                        <div className="add-product-textfields">
+                            <label htmlFor="productName">Product Name</label>
+                            <input type="text" name="productName" placeholder='Enter product name' value={formData.productName} onChange={handleChange} />
 
-                        <label htmlFor="productCategory">Product Category</label>
-                        <input type="text" name="productCategory" placeholder='Enter product category' value={formData.productCategory} onChange={handleChange} />
+                            <label htmlFor="productCategory">Product Category</label>
+                            <input type="text" name="productCategory" placeholder='Enter product category' value={formData.productCategory} onChange={handleChange} />
 
-                        <label htmlFor="productImage">Product Image</label>
-                        <input type="file" accept="image/*" name="productImage" onChange={handleChange} />
+                            <label htmlFor="productImage">Product Image</label>
+                            <input type="file" accept="image/*" name="productImage" onChange={handleChange} />
 
-                        {formData.productImage && (
-                            <img src={URL.createObjectURL(formData.productImage)} alt="Product" style={{ maxWidth: '100%', marginTop: '10px' }} />
-                        )}
+                            {formData.productImage && (
+                                <img src={URL.createObjectURL(formData.productImage)} alt="Product" style={{ maxWidth: '100%', marginTop: '10px' }} />
+                            )}
 
-                        <label htmlFor="productQuantity">Product Quantity</label>
-                        <input type="number" name="productQuantity" placeholder='Enter product quantity' value={formData.productQuantity} onChange={handleChange} />
+                            <label htmlFor="productQuantity">Product Quantity</label>
+                            <input type="number" name="productQuantity" placeholder='Enter product quantity' value={formData.productQuantity} onChange={handleChange} />
 
-                        <label htmlFor="productPrice">Product Price</label>
-                        <input type="number" name="productPrice" placeholder='Enter product price' value={formData.productPrice} onChange={handleChange} />
+                            <label htmlFor="productPrice">Product Price</label>
+                            <input type="number" name="productPrice" placeholder='Enter product price' value={formData.productPrice} onChange={handleChange} />
 
-                        <label htmlFor="expiryDate">Expiry Date</label>
-                        <input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} />
 
-                        <label htmlFor="manufactureDate">Manufacture Date</label>
-                        <input type="date" name="manufactureDate" value={formData.manufactureDate} onChange={handleChange} />
-                    </div>
-                    <div className="add-product-footer">
-                        <button className='cancel-btn' onClick={() => setAddBtnActive(false)}>Cancel</button>
-                        <button className='add-product-btn' onClick={handleSubmit}>Add Product</button>
+                            <label htmlFor="manufactureDate">Manufacture Date</label>
+                            <input type="date" name="manufactureDate" value={formData.manufactureDate} onChange={handleChange} />
+
+                            <label htmlFor="expiryDate">Expiry Date</label>
+                            <input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} />
+
+                        </div>
+                        <div className="add-product-footer">
+                            <button className='cancel-btn' onClick={() => setAddBtnActive(false)}>Cancel</button>
+                            <button className='add-product-btn' onClick={handleSubmit}>Add Product</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
