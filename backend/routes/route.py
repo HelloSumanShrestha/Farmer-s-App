@@ -1,5 +1,7 @@
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Depends, Query, status
 from bson import ObjectId
+from datetime import datetime, timedelta
+from jose import JWTError, jwt
 from models.users import User
 from models.login import Login
 from models.add_items import Add_items
@@ -16,6 +18,7 @@ from schema.schemas import list_serial, individual_serial_item, list_serial_item
 import uuid
 import random
 import smtplib
+
 from email.mime.text import MIMEText
 
 router = APIRouter()
@@ -105,14 +108,14 @@ async def add_items(items_data: Add_items):
         product_id = str(uuid.uuid4())
 
         item_data = {
-            "Product ID": product_id,
-            "Seller ID": items_data.seller_id,
+            "Product_ID": product_id,
+            "Seller_ID": items_data.seller_id,
             "Price": items_data.price,
-            "Product Name": items_data.product_name,
+            "Product_Name": items_data.product_name,
             "Category": items_data.category,
-            "Img URL": items_data.img_url,
-            "Expiry Date": expiry_date_str,
-            "Manufacture Date": manufacture_date_str,
+            "Img_URL": items_data.img_url,
+            "Expiry_Date": expiry_date_str,
+            "Manufacture_Date": manufacture_date_str,
             "Quantity": items_data.quantity
         }
 
@@ -131,18 +134,18 @@ def get_seller(seller_id: str):
 async def update_items(items_data: Update_items):
     try:
 
-        product = product_name.find_one({"Product ID": items_data.product_id, "Seller ID": items_data.seller_id})
+        product = product_name.find_one({"Product_ID": items_data.product_id, "Seller_ID": items_data.seller_id})
 
         if product is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="The product does not exist")
 
         product_name.update_one(
-            {"Product ID": items_data.product_id, "Seller ID": items_data.seller_id},
+            {"Product_ID": items_data.product_id, "Seller_ID": items_data.seller_id},
             {"$set": {"Quantity": items_data.quantity}}
         )
 
         product_name.update_one(
-            {"Product ID": items_data.product_id, "Seller ID": items_data.seller_id},
+            {"Product_ID": items_data.product_id, "Seller_ID": items_data.seller_id},
             {"$set": {"Price": items_data.price}}
         )
 
@@ -167,11 +170,11 @@ async def delete_product(items_data: Delete_product):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 def get_product(product_id: str, seller_id: str):
-    product = product_name.find_one({"Product ID": product_id, "Seller ID": seller_id})
+    product = product_name.find_one({"Product_ID": product_id, "Seller_ID": seller_id})
     return product
 
 def delete_product_from_database(product_id: str, seller_id: str):
-    product_name.delete_one({"Product ID": product_id, "Seller ID": seller_id})
+    product_name.delete_one({"Product_ID": product_id, "Seller_ID": seller_id})
     
     
 @router.post("/forgot_password")
@@ -267,14 +270,14 @@ async def get_products():
 
         for product in products:
             product_info = {
-                "Product ID": product["Product ID"],
-                "Seller ID": product["Seller ID"],
+                "Product_ID": product["Product_ID"],
+                "Seller_ID": product["Seller_ID"],
                 "Price": product["Price"],
-                "Product Name": product["Product Name"],
+                "Product_Name": product["Product_Name"],
                 "Category": product["Category"],
-                "Img URL": product["Img URL"],
-                "Expiry Date": product["Expiry Date"],
-                "Manufacture Date": product["Manufacture Date"],
+                "Img_URL": product["Img_URL"],
+                "Expiry_Date": product["Expiry_Date"],
+                "Manufacture_Date": product["Manufacture_Date"],
                 "Quantity": product["Quantity"]
             }
             product_info_list.append(product_info)
@@ -300,14 +303,14 @@ async def get_seller_products(seller_id: str):
 
         for product in seller_products:
             product_info = {
-                "Product ID": product["Product ID"],
-                "Seller ID": product["Seller ID"],
+                "Product_ID": product["Product_ID"],
+                "Seller_ID": product["Seller_ID"],
                 "Price": product["Price"],
-                "Product Name": product["Product Name"],
+                "Product_Name": product["Product_Name"],
                 "Category": product["Category"],
-                "Img URL": product["Img URL"],
-                "Expiry Date": product["Expiry Date"],
-                "Manufacture Date": product["Manufacture Date"],
+                "Img_URL": product["Img_URL"],
+                "Expiry_Date": product["Expiry_Date"],
+                "Manufacture_Date": product["Manufacture_Date"],
                 "Quantity": product["Quantity"]
             }
             product_info_list.append(product_info)
@@ -333,14 +336,14 @@ async def get_products_by_category(category_name: str):
 
         for product in products:
             product_info = {
-                "Product ID": product["Product ID"],
-                "Seller ID": product["Seller ID"],
+                "Product_ID": product["Product_ID"],
+                "Seller_ID": product["Seller_ID"],
                 "Price": product["Price"],
-                "Product Name": product["Product Name"],
+                "Product_Name": product["Product_Name"],
                 "Category": product["Category"],
-                "Img URL": product["Img URL"],
-                "Expiry Date": product["Expiry Date"],
-                "Manufacture Date": product["Manufacture Date"],
+                "Img_URL": product["Img_URL"],
+                "Expiry_Date": product["Expiry_Date"],
+                "Manufacture_Date": product["Manufacture_Date"],
                 "Quantity": product["Quantity"]
             }
             product_info_list.append(product_info)
@@ -364,14 +367,14 @@ async def read_items(skip: int = 0, limit: int = 10):
 
         for product in products:
             product_info = {
-                "Product ID": product["Product ID"],
-                "Seller ID": product["Seller ID"],
+                "Product_ID": product["Product_ID"],
+                "Seller_ID": product["Seller_ID"],
                 "Price": product["Price"],
-                "Product Name": product["Product Name"],
+                "Product_Name": product["Product_Name"],
                 "Category": product["Category"],
-                "Img URL": product["Img URL"],
-                "Expiry Date": product["Expiry Date"],
-                "Manufacture Date": product["Manufacture Date"],
+                "Img_URL": product["Img_URL"],
+                "Expiry_Date": product["Expiry_Date"],
+                "Manufacture_Date": product["Manufacture_Date"],
                 "Quantity": product["Quantity"]
             }
             product_info_list.append(product_info)
@@ -380,4 +383,27 @@ async def read_items(skip: int = 0, limit: int = 10):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+# Secret key and algorithm for JWT token generation
+SECRET_KEY = "khoi_khoi"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+# Function to create JWT token
+def create_access_token(data: dict, expires_delta: timedelta):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + expires_delta
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+@router.get("/encrypt")
+async def encrypt_data(data: str):
+    try:
+        # Generate JWT token containing the input data
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(data={"data": data}, expires_delta=access_token_expires)
+
+        return {"encrypted_token": access_token}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
