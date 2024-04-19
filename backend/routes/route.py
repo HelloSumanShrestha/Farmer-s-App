@@ -60,6 +60,7 @@ async def sign_up(user: User):
 @router.get("/user_id/{username}")
 async def get_user_id(username: str):
     try:
+        # Check if the username exists
         user = collection_name.find_one({"username": username})
         if user is None:
             # Return HTTP 404 status code if user is not found
@@ -83,6 +84,7 @@ async def get_user_id(username: str):
 @router.post("/login")
 async def login(login_data: Login):
     try:
+        # Check if the username with the password exists or not
         user = collection_name.find_one({"username": login_data.username, "password": login_data.password})
 
         if user is None:
