@@ -38,8 +38,8 @@ export default function Login({ setIsLoggedIn }) {
                     toast.success("Login Successful!", { autoClose: 2000 })
                     setTimeout(() => {
                         setIsLoggedIn(true)
-                        navigate("/")
-                    }, 1500)
+                        navigate("/dashboard")
+                    }, 500)
                 }
                 else {
                     toast.error("Invalid password or username!")
@@ -72,7 +72,7 @@ export default function Login({ setIsLoggedIn }) {
                     </div>
                     <div className="login-footer">
                         <button className='signin-btn' onClick={handleSubmit}>Sign in</button>
-                        <Link to={"/signup"} className='signup-redirect'>
+                        <Link to={"/seller/signup"} className='signup-redirect'>
                             <p>New to Sajha Baari? <span className='login-to-signup'>Signup now</span></p>
                         </Link>
                     </div>

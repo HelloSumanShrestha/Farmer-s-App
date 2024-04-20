@@ -5,7 +5,6 @@ import "../assets/css/Earning.scss"
 const Earnings = () => {
     return (
         <div className="earning-container">
-            <Header headerText={"Earnings"} />
             <div className="earning-main"></div>
         </div>
     );

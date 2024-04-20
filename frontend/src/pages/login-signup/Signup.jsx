@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import users from '../../constant/users';
 import image from "../../assets/images.png"
-import './Signup.scss';
+import "./Signup.scss"
 
 export default function Signup() {
     const [fullName, setFullName] = useState('');
@@ -66,7 +65,7 @@ export default function Signup() {
             email: email,
             username: username,
             password: password,
-            usertype: "seller"
+            usertype: "customer"
         };
 
         fetch("http://localhost:8000/signup", {
@@ -78,7 +77,7 @@ export default function Signup() {
         }).then(response => {
             if (response.status == 201) {
                 toast.success("Signup Successful! Redirecting...");
-                setTimeout(() => navigate('/login'), 2000);
+                setTimeout(() => navigate('/seller/login'), 2000);
             } else if (response.status === 400) {
                 response.json().then(data => {
                     toast.error(data.detail || "Username or email already exists");
@@ -157,7 +156,7 @@ export default function Signup() {
                         <button className="signup-btn" type="submit">Create Account</button>
                         <p className='login-redirect'>
                             Already have an account?{' '}
-                            <Link to="/login" className="signup-to-login">Sign in</Link>
+                            <Link to="/seller/login" className="signup-to-login">Sign in</Link>
                         </p>
                     </div>
                 </form>

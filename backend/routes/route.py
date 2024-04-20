@@ -260,7 +260,6 @@ async def update_password(items_data: Update_password):
 @router.get("/products")
 async def get_products():
     try:
-
         products_cursor = product_name.find()
 
         products = list(products_cursor)
@@ -287,8 +286,8 @@ async def get_products():
         return product_info_list
 
     except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
-        raise HTTPException(status_code=500, detail=str(e))
     
 @router.get("/seller_products/{seller_id}")
 async def get_seller_products(seller_id: str):
@@ -409,3 +408,4 @@ async def encrypt_data(data: str):
         return {"encrypted_token": access_token}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+

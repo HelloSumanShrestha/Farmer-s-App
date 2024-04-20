@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    overflow-y: scroll;
 }
 
 .add-product-button {
@@ -23,6 +24,7 @@
 
 .my-products-main {
     width: 90%;
+    height: 600px;
     overflow-y: scroll;
 
     margin: 20px auto;

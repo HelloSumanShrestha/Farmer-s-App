@@ -1,104 +1,71 @@
 .add-product-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999;
+    height: 100vh;
+    background-color: #f8f8f8;
 }
 
 .add-product-form-container {
     width: 400px;
-    background-color: #fff;
-    border-radius: 5px;
-    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.add-product-form {
-    display: flex;
-    flex-direction: column;
+    padding: 20px;
 }
 
 .add-product-header {
     text-align: center;
     margin-bottom: 20px;
-    font-weight: bold; 
 }
 
-.cancel-btn,
-.add-product-btn {
-    padding: 8px 16px; 
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.add-product-btn {
-    background-color: #2ecc71; 
-    color: #fff;
-}
-
-.add-product-btn:hover {
-    background-color: #27ae60;
+.add-product-main-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
 }
 
 .add-product-textfields {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    gap: 10px;
 }
 
 .add-product-textfields label {
-    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
 }
 
-.add-product-textfields input[type="text"],
-.add-product-textfields input[type="number"],
-.add-product-textfields input[type="file"] {
-    padding: 5px;
-    margin-bottom: 10px;
+.add-product-textfields input {
+    padding: 8px;
     border: 1px solid #ccc;
-    border-radius: 3px;
-}
-
-.add-product-textfields input[type="file"] {
-    border: none;
-    padding: 0;
-}
-
-.add-product-image-preview {
-    margin-top: 10px;
-    max-width: 100%;
+    border-radius: 4px;
 }
 
 .add-product-footer {
     display: flex;
     justify-content: space-between;
+    margin-top: 20px;
 }
 
 .cancel-btn,
 .add-product-btn {
-    padding: 5px 10px;
+    padding: 8px 16px;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
 }
 
 .cancel-btn {
-    background-color: #ccc;
-    color: #fff;
+    background-color: #ddd;
+    color: #333;
 }
 
 .add-product-btn {
-    background-color: #2ecc71;
-    color: #fff;
+    background-color: #3D9769;
+    color: white;
 }
 
 .add-product-btn:hover {
-    background-color: #27ae60;
+    background-color: rgb(17, 99, 52);
 }
