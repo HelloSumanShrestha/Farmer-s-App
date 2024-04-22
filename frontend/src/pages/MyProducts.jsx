@@ -12,12 +12,6 @@ export default function MyProducts({ products, setProducts }) {
     const userId = localStorage.getItem('userId');
     const location = useLocation();
 
-    console.log(products)
-
-    const handleEditProduct = (product) => {
-        setEditProductId(product.product_id);
-    };
-
     return (
         <div className="my-products-container">
             <button className="add-product-button" onClick={() => setAddBtnActive(true)}>Add Product</button>

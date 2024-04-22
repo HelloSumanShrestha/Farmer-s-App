@@ -1,8 +1,10 @@
 import React from 'react'
 import '../../assets/css/Header.scss'
 import dp from "../../assets/images/saitama.jpg"
+import { useNavigate } from 'react-router-dom';
 
 export default function Header({ setIsLoggedIn }) {
+    const navigate = useNavigate()
     return (
         <div className="header">
 
@@ -18,7 +20,10 @@ export default function Header({ setIsLoggedIn }) {
                     {localStorage.getItem("username")}
                 </h3>
 
-                <button onClick={() => setIsLoggedIn(false)}>Logout</button>
+                <button onClick={() => {
+                    navigate("/seller/login")
+                    setIsLoggedIn(false)
+                }}>Logout</button>
             </div>
 
 

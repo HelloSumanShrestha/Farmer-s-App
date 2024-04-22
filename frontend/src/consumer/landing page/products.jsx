@@ -5,7 +5,7 @@ export default function Products() {
   const [productsData, setProductsData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/seller_products/6d3a7d72-2109-4b52-bd6d-c5bed0b15ed6")
+    fetch("http://127.0.0.1:8000/products")
       .then(res => res.json())
       .then(data => setProductsData(data))
       .catch(error => console.error('Error fetching products:', error));

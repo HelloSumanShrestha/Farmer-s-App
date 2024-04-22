@@ -41,10 +41,13 @@ body {
 
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 20px;
 
     .signup-header {
         margin: 16px 0px;
+        text-align: center;
     }
 
     .signup-main-text {

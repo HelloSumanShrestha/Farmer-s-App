@@ -10,6 +10,10 @@ export default function Navbar() {
     setIsActive(!isActive);
   };
 
+  const logout = () => {
+    setIsActive(false)
+  }
+
   return (
     <nav className="navbar">
       <div className="logo">        <span className="sajha">SAJHA</span> <span className="baari">BAARI</span>
@@ -24,9 +28,7 @@ export default function Navbar() {
           <input type="search" id="q-search" placeholder="Search products" className="search-input" />
           <button type="submit" className="search-button">Search</button>
         </div>
-        <li className="login-button">
-          <Link to={"/user/login"}>Login</Link>
-        </li>
+
         <li className="seller-button">
           <Link to={"/seller/signup"}>Become a seller</Link>
         </li>

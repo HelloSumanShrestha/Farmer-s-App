@@ -75,10 +75,10 @@ export default function Signup() {
             },
             body: JSON.stringify(newUser)
         }).then(response => {
-            if (response.status == 201) {
+            if (response.ok) {
                 toast.success("Signup Successful! Redirecting...");
                 setTimeout(() => navigate('/seller/login'), 2000);
-            } else if (response.status === 400) {
+            } else if (response.status === 409) {
                 response.json().then(data => {
                     toast.error(data.detail || "Username or email already exists");
                 });
