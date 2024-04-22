@@ -68,7 +68,7 @@ export default function Login({ setIsLoggedIn }) {
                         <label htmlFor="">Password</label>
                         <input type="password" placeholder='Enter your password' value={password} onChange={(e) => setPassword(e.target.value)} />
 
-                        <p className="forgot-password">Forgot Password?</p>
+                        <Link className="forgot-password" to={"/forgot-password"}>Forgot Password?</Link>
                     </div>
                     <div className="login-footer">
                         <button className='signin-btn' onClick={handleSubmit}>Sign in</button>

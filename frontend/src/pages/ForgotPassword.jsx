@@ -68,7 +68,7 @@ export default function ForgotPassword() {
         fetch("http://localhost:8000/update_password", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, otp: parseInt(otp, 10), new_password: newPassword })
+            body: JSON.stringify({ email, otp: otp, new_password: newPassword })
         }).then(res => {
             if (res.status === 200) {
                 toast.success("Password updated successfully");
@@ -76,7 +76,7 @@ export default function ForgotPassword() {
                 setOtp("");
                 setNewPassword("");
                 setStage(0);
-                navigate("/seller-login")
+                navigate("/seller/login")
             } else {
                 toast.error("Failed to update password");
             }

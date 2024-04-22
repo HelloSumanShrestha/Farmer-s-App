@@ -123,20 +123,22 @@ body {
 
 .search-input {
   padding: 0.5rem;
+  height: 40px;
+  width: 250px;
   border: 1px solid #ccc;
-  border-radius: 25px;
+  border-radius: 12px;
   /* Rounded search input */
   margin-right: 0.5rem;
-  font-size: 0.9rem;
   transition: border-color 0.3s ease;
 }
 
 .search-input:focus {
   border-color: #1D3557;
-  /* Dark blue border on focus */
 }
 
 .search-button {
+  height: 40px;
+  width: 150px;
   background-color: #1D3557;
   /* Dark blue search button */
   color: #fff;
@@ -146,6 +148,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-size: .9rem;
 }
 
 .search-button:hover {

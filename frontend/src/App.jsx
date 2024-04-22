@@ -20,6 +20,7 @@ import Testimonials from './consumer/landing page/testimonials';
 import Blogs from './consumer/landing page/blogs';
 import { AboutUs } from './consumer/landing page/aboutus';
 import Navbar from './consumer/landing page/navbar';
+import ForgotPassword from './pages/ForgotPassword';
 
 const Outline = () => {
   return <>
@@ -103,6 +104,7 @@ function App() {
               <Route path="/seller/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserId={setUserId} />} />
               <Route path="/user/signup" element={<UserSignup />} />
               <Route path="/user/login" element={<UserLogin setIsLoggedIn={setIsLoggedIn} setUserId={setUserId} />} />
+              <Route path="/forgot-password" element={<ForgotPassword/>} />
             </Routes>
           } />
         )}
