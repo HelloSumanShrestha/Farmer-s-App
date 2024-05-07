@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
-password = "wZJWGz1k7k1V6fuN"
-MONGODB_URI = f"mongodb+srv://iamsuman066:{password}@colab.qykvs0f.mongodb.net/?retryWrites=true&w=majority&appName=Colab"
+password = "Bantawa041124"
+MONGODB_URI = f"mongodb+srv://Prithak:{password}@colab.mv3rzvo.mongodb.net/?retryWrites=true&w=majority&appName=Colab"
 
 client = MongoClient(MONGODB_URI)
 
