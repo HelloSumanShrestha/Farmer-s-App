@@ -1,114 +1,44 @@
-import { useEffect, useState } from 'react'
-import { Route, Routes, Navigate } from 'react-router-dom'
-import UserLogin from './consumer/login-signup/UserLogin';
-
-import Home from './pages/Home';
-import Earnings from "./pages/Earnings"
-import Sidebar from './components/Sidebar/Sidebar';
-import Settings from "./pages/Settings"
-import MyProducts from './pages/MyProducts';
-
-import Signup from "./pages/login-signup/Signup"
-import Login from "./pages/login-signup/Login"
-
-import "./assets/css/App.scss"
-import UserSignup from './consumer/login-signup/userSignup';
-import Header from './components/Header/Header';
-import Banner from './consumer/landing page/banner';
-import Products from './consumer/landing page/products';
-import Testimonials from './consumer/landing page/testimonials';
-import Blogs from './consumer/landing page/blogs';
-import { AboutUs } from './consumer/landing page/aboutus';
-import Navbar from './consumer/landing page/navbar';
-import ForgotPassword from './pages/ForgotPassword';
-
-const Outline = () => {
-  return <>
-    <Navbar />
-    <Banner />
-    <Products />
-    <Testimonials />
-    <Blogs />
-    <AboutUs />
-  </>
-}
-
+import { useState } from 'react'
+import './App.css'
+import Layout from './Layout'
+import Home from './pages/landing-pages/Home'
+import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import Login from "./pages/login/Login"
+import ProtectedRoute from "./pages/landing-pages/ProtectedRoute"
+import About from "./pages/landing-pages/About"
+import AllCategories from "./pages/landing-pages/AllCategories"
+import Cart from "./pages/landing-pages/Cart"
+import PageNotFound from "./pages/landing-pages/PageNotFound"
+import AllProducts from './pages/landing-pages/AllProdcuts'
+import ProductsByCategory from './pages/landing-pages/ProductsByCategory'
+import SearchPage from "./pages/landing-pages/SearchPage"
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [products, setProducts] = useState([{}]);
-  const [userId, setUserId] = useState({})
 
-  useEffect(() => {
-    const userLoggedIn = localStorage.getItem('isLoggedIn')
-    if (userLoggedIn === 'true') {
-      setIsLoggedIn(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    const username = localStorage.getItem("username");
-    fetch(`http://localhost:8000/user_id/${username}`, {})
-      .then(res => res.json())
-      .then(data => {
-        localStorage.setItem('userId', data.seller_id);
-      });
-  }, []);
-
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    fetch(`http://localhost:8000/seller_products/${userId}`, {})
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data)
-        console.log(products)
-      });
-  }, []);
+  const [isLoggedin, setIsLoggedIn] = useState(false)
 
   return (
     <>
-      <Routes>
-        {/* Landing page routes */}
-        <Route path="/" element={<Outline />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/testimonials" element={<Testimonials />} />
-        <Route path="/blogs" element={<Blogs />} />
-        <Route path="/aboutus" element={<AboutUs />} />
-
-        {/* Authenticated routes */}
-        {isLoggedIn && (
-          <Route
-            path="/dashboard/*"
-            element={
-              <>
-                <Header setIsLoggedIn={setIsLoggedIn} />
-                <main>
-                  <Sidebar />
-                  <Routes>
-                    <Route path="/" index element={<Home products={products} />} />
-                    <Route path="/earnings" element={<Earnings />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/my-products" element={<MyProducts setProducts={setProducts} products={products} />} />
-                  </Routes>
-                </main>
-              </>
-            }
-          />
-        )}
-
-        {/* Unauthenticated routes */}
-        {!isLoggedIn && (
-          <Route path="/*" element={
-            <Routes>
-              <Route path="/seller/signup" element={<Signup />} />
-              <Route path="/seller/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserId={setUserId} />} />
-              <Route path="/user/signup" element={<UserSignup />} />
-              <Route path="/user/login" element={<UserLogin setIsLoggedIn={setIsLoggedIn} setUserId={setUserId} />} />
-              <Route path="/forgot-password" element={<ForgotPassword/>} />
-            </Routes>
-          } />
-        )}
-      </Routes>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout isLoggedIn={isLoggedin} setIsLoggedIn={setIsLoggedIn} />}>
+            <Route path='/' element={<Home />} />
+            <Route path='/home' element={<Home />} />
+            <Route path="/products" element={<AllProducts />} />
+            <Route path="/categories" element={<AllCategories />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/categories/:categoryName" element={
+              <ProductsByCategory />} />
+            <Route path="/search/:query" element={<SearchPage />} />
+            <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+            {/* Protected Route */}
+            <Route element={<ProtectedRoute isUserLoggedIn={isLoggedin} />}>
+              <Route path="/cart" element={<Cart />} />
+            </Route>
+            <Route path="/*" element={<PageNotFound />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

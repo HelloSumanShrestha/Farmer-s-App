@@ -1,0 +1,32 @@
+.about {
+    width: 80%;
+    display: flex;
+    margin: 50px auto;
+    justify-content: space-between;
+
+    .about-text {
+        width: 50%;
+        display: flex;
+        gap: 25px;
+        flex-direction: column;
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 500;
+        }
+
+        p {
+            font-size: 1.05rem;
+            text-align: justify;
+            color: gray;
+        }
+    }
+
+    .image {
+        width: 40%;
+
+        img {
+            width: 100%;
+        }
+    }
+}
