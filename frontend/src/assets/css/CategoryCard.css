@@ -1,0 +1,33 @@
+.category-card {
+    width: 225px;
+    height: 225px;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: box-shadow 0.3s;
+    background: #fff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px;
+}
+
+.category-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+img {
+    width: 150px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.category-name {
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: gray;
+    margin: 15px 0;
+}
