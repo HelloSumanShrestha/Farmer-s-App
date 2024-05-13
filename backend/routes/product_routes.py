@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
+from datetime import datetime
 from models.add_items import Add_items
 from models.update_items import Update_items
 from models.delete_product import Delete_product
@@ -12,6 +13,9 @@ product_router = APIRouter()
 @product_router.get("/products", tags=["Product"])
 async def get_products():
     try:
+        current_date = datetime.utcnow()  # Get current date and time
+
+        # Query products from the database
         products_cursor = product_name.find()
 
         products = list(products_cursor)
@@ -22,23 +26,35 @@ async def get_products():
         product_info_list = []
 
         for product in products:
-            product_info = {
-                "Product_ID": product["Product_ID"],
-                "Seller_ID": product["Seller_ID"],
-                "Price": product["Price"],
-                "Product_Name": product["Product_Name"],
-                "Category": product["Category"],
-                "Img_URL": product["Img_URL"],
-                "Expiry_Date": product["Expiry_Date"],
-                "Manufacture_Date": product["Manufacture_Date"],
-                "Quantity": product["Quantity"]
-            }
-            product_info_list.append(product_info)
+            # Parse the date string into a datetime object
+            expiry_date = datetime.strptime(product["Expiry_Date"], "%Y-%m-%d")
+            # print("Expiry Date:", expiry_date)
+            # print("Current Date:", current_date)
+            # if expiry_date > current_date:
+            #     print("Product is not expired")
+            # else:
+            #     print("Product is expired")
+
+            # Check if the product has not expired
+            if expiry_date > current_date:
+                product_info = {
+                    "Product_ID": product["Product_ID"],
+                    "Seller_ID": product["Seller_ID"],
+                    "Price": product["Price"],
+                    "Product_Name": product["Product_Name"],
+                    "Category": product["Category"],
+                    "Img_URL": product["Img_URL"],
+                    "Expiry_Date": product["Expiry_Date"],
+                    "Manufacture_Date": product["Manufacture_Date"],
+                    "Quantity": product["Quantity"]
+                }
+                product_info_list.append(product_info)
 
         return product_info_list
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error")  
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
     
 @product_router.post("/process_order", tags=["Order"])
 async def process_order(product_id: str, quantity: int, user_id: str):
@@ -146,6 +162,7 @@ async def process_order(product_id: str, quantity: int, user_id: str):
 @product_router.get("/seller_products/{seller_id}", tags=["Product"])
 async def get_seller_products(seller_id: str):
     try:
+        current_date = datetime.utcnow()  # Get current date and time
 
         products_cursor = product_name.find({"Seller_ID": seller_id})
 
@@ -157,28 +174,30 @@ async def get_seller_products(seller_id: str):
         product_info_list = []
 
         for product in seller_products:
-            product_info = {
-                "Product_ID": product["Product_ID"],
-                "Seller_ID": product["Seller_ID"],
-                "Price": product["Price"],
-                "Product_Name": product["Product_Name"],
-                "Category": product["Category"],
-                "Img_URL": product["Img_URL"],
-                "Expiry_Date": product["Expiry_Date"],
-                "Manufacture_Date": product["Manufacture_Date"],
-                "Quantity": product["Quantity"]
-            }
-            product_info_list.append(product_info)
+            expiry_date = datetime.strptime(product["Expiry_Date"], "%Y-%m-%d")
+            if expiry_date > current_date:
+                product_info = {
+                    "Product_ID": product["Product_ID"],
+                    "Seller_ID": product["Seller_ID"],
+                    "Price": product["Price"],
+                    "Product_Name": product["Product_Name"],
+                    "Category": product["Category"],
+                    "Img_URL": product["Img_URL"],
+                    "Expiry_Date": product["Expiry_Date"],
+                    "Manufacture_Date": product["Manufacture_Date"],
+                    "Quantity": product["Quantity"]
+                }
+                product_info_list.append(product_info)
 
         return product_info_list
 
     except Exception as e:
-
         raise HTTPException(status_code=500, detail=str(e))
 
 @product_router.get("/category/{category_name}", tags=["Product"])
 async def get_products_by_category(category_name: str):
     try:
+        current_date = datetime.utcnow()  # Get current date and time
 
         products_cursor = product_name.find({"Category": category_name})
 
@@ -190,28 +209,31 @@ async def get_products_by_category(category_name: str):
         product_info_list = []
 
         for product in products:
-            product_info = {
-                "Product_ID": product["Product_ID"],
-                "Seller_ID": product["Seller_ID"],
-                "Price": product["Price"],
-                "Product_Name": product["Product_Name"],
-                "Category": product["Category"],
-                "Img_URL": product["Img_URL"],
-                "Expiry_Date": product["Expiry_Date"],
-                "Manufacture_Date": product["Manufacture_Date"],
-                "Quantity": product["Quantity"]
-            }
-            product_info_list.append(product_info)
+            expiry_date = datetime.strptime(product["Expiry_Date"], "%Y-%m-%d")
+            if expiry_date > current_date:
+                product_info = {
+                    "Product_ID": product["Product_ID"],
+                    "Seller_ID": product["Seller_ID"],
+                    "Price": product["Price"],
+                    "Product_Name": product["Product_Name"],
+                    "Category": product["Category"],
+                    "Img_URL": product["Img_URL"],
+                    "Expiry_Date": product["Expiry_Date"],
+                    "Manufacture_Date": product["Manufacture_Date"],
+                    "Quantity": product["Quantity"]
+                }
+                product_info_list.append(product_info)
 
         return product_info_list
 
     except Exception as e:
-
         raise HTTPException(status_code=500, detail=str(e))
 
 @product_router.get("/items", tags=["Product"])
 async def read_items(skip: int = 0, limit: int = 10):
     try:
+        current_date = datetime.utcnow()  # Get current date and time
+
         products_cursor = product_name.find().skip(skip).limit(limit)
         products = list(products_cursor)
 
@@ -221,18 +243,20 @@ async def read_items(skip: int = 0, limit: int = 10):
         product_info_list = []
 
         for product in products:
-            product_info = {
-                "Product_ID": product["Product_ID"],
-                "Seller_ID": product["Seller_ID"],
-                "Price": product["Price"],
-                "Product_Name": product["Product_Name"],
-                "Category": product["Category"],
-                "Img_URL": product["Img_URL"],
-                "Expiry_Date": product["Expiry_Date"],
-                "Manufacture_Date": product["Manufacture_Date"],
-                "Quantity": product["Quantity"]
-            }
-            product_info_list.append(product_info)
+            expiry_date = datetime.strptime(product["Expiry_Date"], "%Y-%m-%d")
+            if expiry_date > current_date:
+                product_info = {
+                    "Product_ID": product["Product_ID"],
+                    "Seller_ID": product["Seller_ID"],
+                    "Price": product["Price"],
+                    "Product_Name": product["Product_Name"],
+                    "Category": product["Category"],
+                    "Img_URL": product["Img_URL"],
+                    "Expiry_Date": product["Expiry_Date"],
+                    "Manufacture_Date": product["Manufacture_Date"],
+                    "Quantity": product["Quantity"]
+                }
+                product_info_list.append(product_info)
 
         return product_info_list
 

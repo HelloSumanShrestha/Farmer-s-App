@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from models.users import User
+from models.UserUpdate import UserUpdate
 from models.login import Login
 from models.forgot_password import Forgot_password
 from models.otp import Otp
@@ -14,7 +15,7 @@ from email.mime.text import MIMEText
 
 auth_router = APIRouter()
 
-@auth_router.get("/", , tags=["Welcome note"])
+@auth_router.get("/" , tags=["Welcome note"])
 async def root():
     return {"message": "Welcome to Farmer's App"}
 
@@ -31,6 +32,8 @@ async def sign_up(user: User):
 
         user_id = str(uuid.uuid4())  
         user_data = user.dict()
+        user_data["Address"] = ""
+        user_data["Profile_picture"] = ""
 
         # Assign a unique seller ID if the user is a seller, else assign a user ID
         if user.usertype.lower() == "seller":
@@ -46,9 +49,61 @@ async def sign_up(user: User):
         return {"message": "User created successfully", "id": str(result.inserted_id)}
     
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
-    
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))  
 
+@auth_router.put("/edit/{identifier}", tags=["User"])
+async def edit_user(identifier: str, user_update: UserUpdate):
+    try:
+        # Check if the user exists
+        existing_user = collection_name.find_one({"$or": [{"user_id": identifier}, {"Seller_id": identifier}]})
+        if not existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        # # Validate profile_picture if it's a URL
+        # if user_update.profile_picture and not user_update.profile_picture.startswith(("http://", "https://")):
+        #     raise HTTPException(
+        #         status_code=status.HTTP_400_BAD_REQUEST,
+        #         detail="Invalid profile_picture. Must be a valid URL."
+        #     )
+
+        # Check if the new username matches the current one
+        current_username = existing_user.get("username")
+        new_username = user_update.username
+        if new_username and new_username == current_username:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="New username must be different from the current one"
+            )
+
+        # Check if the new username is already taken
+        if new_username:
+            existing_username = collection_name.find_one({"username": new_username})
+            if existing_username:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Username already exists"
+                )
+
+        # Update user information
+        update_data = user_update.dict(exclude_unset=True)  # Exclude unset fields (None values)
+        result = collection_name.update_one({"$or": [{"user_id": identifier}, {"Seller_id": identifier}]}, {"$set": update_data})
+
+        if result.modified_count == 0:
+            raise HTTPException(
+                status_code=status.HTTP_304_NOT_MODIFIED,
+                detail="No changes applied"
+            )
+
+        return {"message": "User information updated successfully"}
+
+    except HTTPException:
+        raise  # Re-raise HTTPException to preserve its original status code and detail message
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @auth_router.get("/user_id/{username}", tags=["User"])
 async def get_user_id(username: str):
