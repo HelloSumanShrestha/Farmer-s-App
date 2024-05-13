@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
+import { toast } from 'react-toastify';
 
 export default function Login({ setIsLoggedIn }) {
     const [email, setEmail] = useState('');
@@ -9,27 +10,32 @@ export default function Login({ setIsLoggedIn }) {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-
-        console.log({ "customer_email": email, "password": password });
+        console.log({ "email": email, "password": password });
         e.preventDefault();
-        // try {
-        // const response = await fetch('http://localhost:8000/sellers/login', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({ "customer_email": email, "password": password }),
-        // });
-        // if (response.ok) {
-        setIsLoggedIn(true);
-        navigate('/');
-        //     } else {
-        //         console.error('Login failed');
-        //     }
-        // } catch (error) {
-        //     console.error('Error logging in:', error);
-        // }
+        try {
+            const response = await fetch('http://localhost:8000/customers/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "email": email, "password": password }),
+            });
+            if (response.ok) {
+                toast.success("Login Successful!", {
+                    autoClose: 1000
+                })
+                setIsLoggedIn(true);
+                navigate('/');
+            } else {
+                toast.info("Invalid email or password!")
+                console.error('Login failed');
+            }
+        } catch (error) {
+            toast.error("Invalid email or password!")
+            console.error('Error logging in:', error);
+        }
     };
+
 
 
     const handleShowPassword = () => {
@@ -66,7 +72,7 @@ export default function Login({ setIsLoggedIn }) {
                         <p className="show-password-text">Show Password</p>
                     </div>
 
-                    <p className="forgot-password">Forgot Password?</p>
+                    {/* <p className="forgot-password">Forgot Password?</p> */}
                 </div>
 
                 <div className="login-footer">

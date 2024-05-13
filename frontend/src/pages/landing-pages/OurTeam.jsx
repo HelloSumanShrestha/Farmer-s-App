@@ -5,7 +5,7 @@ import sanskarImage from '../../assets/ourteam/sanskar.jpg';
 import devrajImage from '../../assets/ourteam/devraj.jpg';
 import prithakImage from '../../assets/ourteam/prithak.png';
 import romanImage from '../../assets/ourteam/roman.png';
-import suman from "../../assets/ourteam/suman.jpg"
+import suman from "../../assets/ourteam/suman.png"
 
 function OurTeam() {
     return (

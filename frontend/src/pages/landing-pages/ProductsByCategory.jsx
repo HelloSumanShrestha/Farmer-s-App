@@ -22,16 +22,16 @@ export default function ProductsByCategory() {
         if (mappedCategoryName) {
             fetch(`http://localhost:8000/products/category/${mappedCategoryName}`)
                 .then(res => res.json())
-                .then(data => setProducts(data))
+                .then(data => { setProducts(data); console.log(data); })
         } else {
             console.log("Error fetching the data of " + categoryName);
         }
     }, [categoryName, productsMap])
 
-
-    const handleClick = () => {
-        navigate("/products")
-    }
+    const handleProductView = (product) => {
+        console.log(product.productId);
+        navigate(`/products/${product.productId}`);
+    };
 
     return (
         <div className="products">
@@ -41,7 +41,7 @@ export default function ProductsByCategory() {
 
             <div className="products-items">
                 {products && products.map(i => (
-                    <div className="product" key={i.productId}>
+                    <div className="product" key={i.productId} onClick={() => handleProductView(i)}>
                         <img src={i.productImage} alt="" />
                         <div className="product-description">
                             <p>{i.productName}</p>

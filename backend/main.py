@@ -1,9 +1,6 @@
 from fastapi import FastAPI
-from routes.auth_routes import auth_router
-from routes.admin_routes import admin_router
-from routes.seller_routes import seller_router
-from routes.product_routes import product_router
 from fastapi.middleware.cors import CORSMiddleware
+from routes import customer, products, seller, sales, login
 
 app = FastAPI()
 
@@ -15,7 +12,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_router)
-app.include_router(product_router)
-app.include_router(seller_router)
-app.include_router(admin_router)
+app.include_router(products.router)
+app.include_router(customer.router)
+app.include_router(seller.router)
+app.include_router(sales.router)
+app.include_router(login.router)

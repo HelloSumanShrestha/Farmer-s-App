@@ -12,10 +12,13 @@ import PageNotFound from "./pages/landing-pages/PageNotFound"
 import AllProducts from './pages/landing-pages/AllProdcuts'
 import ProductsByCategory from './pages/landing-pages/ProductsByCategory'
 import SearchPage from "./pages/landing-pages/SearchPage"
+import ProductOnDetail from './components/ProductOnDetail'
+import ProfileSection from './pages/landing-pages/Profile'
 
 function App() {
 
   const [isLoggedin, setIsLoggedIn] = useState(false)
+  const [cartItems, setCartItems] = useState([])
 
   return (
     <>
@@ -23,17 +26,28 @@ function App() {
         <Routes>
           <Route element={<Layout isLoggedIn={isLoggedin} setIsLoggedIn={setIsLoggedIn} />}>
             <Route path='/' element={<Home />} />
+
             <Route path='/home' element={<Home />} />
+
             <Route path="/products" element={<AllProducts />} />
+            <Route path="/products/:productId" element={
+              <ProductOnDetail cartItems={cartItems} setCartItems={setCartItems} />} />
+
             <Route path="/categories" element={<AllCategories />} />
-            <Route path="/about" element={<About />} />
             <Route path="/categories/:categoryName" element={
               <ProductsByCategory />} />
+
+            <Route path="/about" element={<About />} />
             <Route path="/search/:query" element={<SearchPage />} />
+
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
             {/* Protected Route */}
             <Route element={<ProtectedRoute isUserLoggedIn={isLoggedin} />}>
-              <Route path="/cart" element={<Cart />} />
+
+              <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
+
+              <Route path="/profile" element={<ProfileSection />} />
+
             </Route>
             <Route path="/*" element={<PageNotFound />} />
           </Route>

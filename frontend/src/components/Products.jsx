@@ -11,13 +11,18 @@ export default function Products() {
     useEffect(() => {
         fetch("http://localhost:8000/products")
             .then(res => res.json())
-            .then(data => setProducts(data))
+            .then(data => { setProducts(data); console.log(data); })
     },
         [])
 
     const handleClick = () => {
         navigate("/products")
     }
+
+    const handleProductView = (product) => {
+        console.log(product.productId);
+        navigate(`/products/${product.productId}`);
+    };
 
     return (
         <div className="products">
@@ -33,16 +38,16 @@ export default function Products() {
 
                 {products && products.slice(0, 5).map(i => {
                     return <>
-                        <div className="product">
+                        <div className="product" key={i.productId} onClick={() => handleProductView(i)}>
                             <img src={i.productImage} alt="" />
                             <div className="product-description">
                                 <p>{i.productName}</p>
                                 <span>Rs. {i.productPrice}</span>
                             </div>
-                        </div>
+                        </div >
                     </>
                 })}
             </div>
-        </div>
+        </div >
     )
 }

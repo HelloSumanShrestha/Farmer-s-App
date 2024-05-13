@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 .login-form-container {
-    margin: auto;
+    margin: 15px auto;
     width: 50%;
-    height: 100vh;
+    height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,7 +11,7 @@
 
 .login-form {
 
-    background: var(--lighter-green);
+    background: #fff;
     width: 450px;
     height: 600px;
     border-radius: 12px;
@@ -22,7 +22,7 @@
     padding: 0px 50px;
 
     .login-header {
-        margin: 32px 0px;
+        margin: 28px 0px;
     }
 
     .login-main-text {
@@ -128,6 +128,11 @@
     gap: 20px;
     flex-direction: column;
     align-items: center;
+
+    p {
+        display: flex;
+        gap: 8px;
+    }
 }
 
 .errorLabel {
