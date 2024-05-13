@@ -8,7 +8,7 @@ import uuid
 
 seller_router = APIRouter()
 
-@seller_router.post("/add_items")
+@seller_router.post("/add_items",tags=["Seller"])
 async def add_items(items_data: Add_items):
     try:
         # Use POST for adding items
@@ -44,7 +44,7 @@ def get_seller(seller_id: str):
     seller = collection_name.find_one({"Seller_id": seller_id})
     return seller
 
-@seller_router.put("/update_items")
+@seller_router.put("/update_items",tags=["Seller"])
 async def update_items(items_data: Update_items):
     try:
 
@@ -68,7 +68,7 @@ async def update_items(items_data: Update_items):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-@seller_router.delete("/delete_product")
+@seller_router.delete("/delete_product",tags=["Seller"])
 async def delete_product(items_data: Delete_product):
     try:
 

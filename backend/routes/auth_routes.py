@@ -14,11 +14,11 @@ from email.mime.text import MIMEText
 
 auth_router = APIRouter()
 
-@auth_router.get("/")
+@auth_router.get("/", , tags=["Welcome note"])
 async def root():
     return {"message": "Welcome to Farmer's App"}
 
-@auth_router.post("/signup")
+@auth_router.post("/signup",  tags=["User"])
 async def sign_up(user: User):
     try:
         # Check if the user already exists
@@ -48,7 +48,9 @@ async def sign_up(user: User):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
     
-@auth_router.get("/user_id/{username}")
+
+
+@auth_router.get("/user_id/{username}", tags=["User"])
 async def get_user_id(username: str):
     try:
         # Check if the username exists
@@ -72,7 +74,7 @@ async def get_user_id(username: str):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-@auth_router.post("/login")
+@auth_router.post("/login", tags=["Login"])
 async def login(login_data: Login):
     try:
         # Check if the username with the password exists or not
@@ -87,7 +89,7 @@ async def login(login_data: Login):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 
-@auth_router.post("/forgot_password")
+@auth_router.post("/forgot_password", tags=["Forgot password"])
 async def forgot_password(items_data: Forgot_password):
     try:
 
@@ -132,7 +134,7 @@ def send_otp_to_email(email: str, otp: str):
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, receiver_email, message.as_string())
 
-@auth_router.post("/otp")
+@auth_router.post("/otp", tags=["Forgot password"])
 async def verify_otp(items_data: Otp):
     try:
         # Use POST for OTP verification
@@ -148,7 +150,7 @@ async def verify_otp(items_data: Otp):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-@auth_router.put("/update_password")
+@auth_router.put("/update_password", tags=["Forgot password"])
 async def update_password(items_data: Update_password):
     try:
         # Use PUT for updating password

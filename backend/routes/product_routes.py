@@ -9,7 +9,7 @@ from config.database import collection_name
 
 product_router = APIRouter()
 
-@product_router.get("/products")
+@product_router.get("/products", tags=["Product"])
 async def get_products():
     try:
         products_cursor = product_name.find()
@@ -40,7 +40,7 @@ async def get_products():
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")  
     
-@product_router.post("/process_order")
+@product_router.post("/process_order", tags=["Order"])
 async def process_order(product_id: str, quantity: int, user_id: str):
     try:
         # Check if the product with the given product_id exists
@@ -143,7 +143,7 @@ async def process_order(product_id: str, quantity: int, user_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
     
-@product_router.get("/seller_products/{seller_id}")
+@product_router.get("/seller_products/{seller_id}", tags=["Product"])
 async def get_seller_products(seller_id: str):
     try:
 
@@ -176,7 +176,7 @@ async def get_seller_products(seller_id: str):
 
         raise HTTPException(status_code=500, detail=str(e))
 
-@product_router.get("/category/{category_name}")
+@product_router.get("/category/{category_name}", tags=["Product"])
 async def get_products_by_category(category_name: str):
     try:
 
@@ -209,7 +209,7 @@ async def get_products_by_category(category_name: str):
 
         raise HTTPException(status_code=500, detail=str(e))
 
-@product_router.get("/items")
+@product_router.get("/items", tags=["Product"])
 async def read_items(skip: int = 0, limit: int = 10):
     try:
         products_cursor = product_name.find().skip(skip).limit(limit)

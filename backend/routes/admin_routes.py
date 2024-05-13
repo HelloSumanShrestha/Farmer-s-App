@@ -4,7 +4,7 @@ from bson import ObjectId
 
 admin_router = APIRouter()
 
-@admin_router.get("/user_info")
+@admin_router.get("/user_info", tags=["Admin"])
 async def get_user_info(user_type: str, user_id: str):
     try:
         if user_type.lower() == "customer":
