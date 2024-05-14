@@ -1,14 +1,19 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from pymongo import MongoClient
 from datetime import datetime
 from models.add_items import Add_items
 from models.update_items import Update_items
 from models.delete_product import Delete_product
+from bson import ObjectId
 from config.database import product_name
 from config.database import customer_db
 from config.database import seller_db
 from config.database import collection_name
+import uuid
 
 product_router = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @product_router.get("/products", tags=["Product"])
 async def get_products():
@@ -54,7 +59,6 @@ async def get_products():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
-
     
 @product_router.post("/process_order", tags=["Order"])
 async def process_order(product_id: str, quantity: int, user_id: str):
@@ -72,6 +76,9 @@ async def process_order(product_id: str, quantity: int, user_id: str):
         new_quantity = product["Quantity"] - quantity
         product_name.update_one({"Product_ID": product_id}, {"$set": {"Quantity": new_quantity}})
         
+        # Generate a random order_id
+        order_id = str(uuid.uuid4())
+
         # Get customer name
         customer = collection_name.find_one({"user_id": user_id})
         if customer is None:
@@ -114,11 +121,11 @@ async def process_order(product_id: str, quantity: int, user_id: str):
                     "Product_ID": product_id
                 }, {"$set": {"Quantity": updated_quantity}})
             else:
-                # This should not happen ideally, but if it does, handle it
                 raise HTTPException(status_code=500, detail="Order exists in customer_db but not in seller_db")
         else:
-            # Store the order in the database
+            # Store the order in the database with the generated order_id
             order_data = {
+                "order_id": order_id,  # Assign the random order_id
                 "Customer_ID": user_id,
                 "Customer_Name": customer_name,
                 "Seller_ID": seller_id,
@@ -130,12 +137,14 @@ async def process_order(product_id: str, quantity: int, user_id: str):
                 "Quantity": quantity,
                 "Expiry_Date": product["Expiry_Date"],
                 "Manufacture_Date": product["Manufacture_Date"],
-                "Img_URL": product["Img_URL"]
+                "Img_URL": product["Img_URL"],
+                "order": "Pending"  
             }
             customer_db.insert_one(order_data)
 
-            # Insert order into seller_collection
+            # Insert order into seller_collection with the same order_id
             seller_order_data = {
+                "order_id": order_id,  
                 "Seller_ID": seller_id,
                 "Seller_Name": seller_name,
                 "Customer_ID": user_id,
@@ -147,7 +156,8 @@ async def process_order(product_id: str, quantity: int, user_id: str):
                 "Quantity": quantity,
                 "Expiry_Date": product["Expiry_Date"],
                 "Manufacture_Date": product["Manufacture_Date"],
-                "Img_URL": product["Img_URL"]
+                "Img_URL": product["Img_URL"],
+                "order": "Pending" 
             }
             seller_db.insert_one(seller_order_data)
 
@@ -157,6 +167,50 @@ async def process_order(product_id: str, quantity: int, user_id: str):
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@product_router.get("/order_count", tags=["Order"])
+async def get_order_count():
+    try:
+        # Count the number of orders
+        num_orders = customer_db.count_documents({})
+
+        return {"OrderCount": num_orders}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+# Endpoint to update order status
+@product_router.get("/update_order_status", tags=["Order"])
+async def update_order_status(seller_id: str, order_id: str, new_status: str):
+    try:
+        # Check if the seller exists
+        seller = get_seller(seller_id)
+        if seller is None or seller.get('usertype') != 'Seller':
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Seller not found or is not a seller")
+
+        # Retrieve order details from seller collection
+        order = seller_db.find_one({"Seller_ID": seller_id, "order_id": order_id})
+        if order is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+
+        # Update order status in seller collection
+        seller_db.update_one({"Seller_ID": seller_id, "order_id": order_id}, {"$set": {"order": new_status}})
+
+        # Update order status in customer collection as well
+        customer_db.update_one({"Customer_ID": order["Customer_ID"], "order_id": order_id}, {"$set": {"order": new_status}})
+
+        # Return a simple message confirming the update
+        return {"message": "Order status has been updated successfully."}
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+def get_seller(seller_id: str):
+    seller = collection_name.find_one({"Seller_id": seller_id})
+    return seller
+
 
     
 @product_router.get("/seller_products/{seller_id}", tags=["Product"])
