@@ -1,0 +1,73 @@
+.widget {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+  padding: 10px;
+  background-color: rgb(222, 255, 239);
+  -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+  border-radius: 10px;
+  height: 100px;
+  transition: all 0.3s ease-in-out; /* Added transition for smoother hover effects */
+
+  /* Improved hover effect for the entire widget */
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .left,
+  .right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: 14px;
+    color: rgb(160, 160, 160);
+    margin-bottom: 5px;
+  }
+
+  .counter {
+    font-size: 28px;
+    font-weight: 300;
+    color: #333; /* Adjusted counter color for better readability */
+  }
+
+  .link {
+    font-size: 12px;
+    width: max-content;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease-in-out;
+
+    /* Improved link hover effect with smoother border color transition */
+    &:hover {
+      border-bottom-color: #ccc;
+    }
+  }
+
+  .percentage {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold; /* Added bold font for percentage */
+    margin-top: 5px;
+
+    &.positive {
+      color: green;
+    }
+
+    &.negative {
+      color: red;
+    }
+  }
+
+  .icon {
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 5px;
+    align-self: flex-end;
+  }
+}
