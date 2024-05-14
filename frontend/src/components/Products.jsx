@@ -15,6 +15,7 @@ export default function Products() {
     },
         [])
 
+
     const handleClick = () => {
         navigate("/products")
     }
