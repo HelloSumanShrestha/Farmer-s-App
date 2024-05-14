@@ -9,7 +9,7 @@ export default function AllProducts() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Dummy products
+
     const dummyProducts = [
       {
         productName: 'Product 1',
@@ -65,15 +65,8 @@ export default function AllProducts() {
         productPrice: 350,
         expiryDate: '2024-06-20',
       },
-      {
-        productName: 'Product 10',
-        productImage: 'image_url_10',
-        productPrice: 400,
-        expiryDate: '2024-07-20',
-      },
     ];
 
-    // Sorting the products
     let sortedProducts = [...dummyProducts];
     if (sortType === 'ascPrice') {
       sortedProducts = [...dummyProducts].sort((a, b) => a.productPrice - b.productPrice);
