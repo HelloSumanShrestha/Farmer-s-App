@@ -133,6 +133,11 @@
         display: flex;
         gap: 8px;
     }
+
+    a {
+        text-decoration: none;
+        color: green;
+    }
 }
 
 .errorLabel {

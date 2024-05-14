@@ -4,12 +4,14 @@ import { IoIosSearch } from "react-icons/io";
 import { FaUserAlt } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
-
+import useStore from '../zustand/userInfo';
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
+export default function Navbar() {
     const navigate = useNavigate()
     const [searchItem, setSearchItem] = useState("")
+
+    const { isLoggedIn, logOut } = useStore();
 
     return (
         <header>
@@ -65,7 +67,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
                                         <FaUserCircle />
                                     </Link>
                                 </li>
-                                <li onClick={() => setIsLoggedIn(false)} style={{ cursor: "pointer" }}>
+                                <li onClick={logOut} style={{ cursor: "pointer" }}>
                                     Logout
                                 </li>
                             </>

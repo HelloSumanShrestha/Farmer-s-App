@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import "../assets/css/productsOnDetail.css"
+import { useParams, useNavigate } from 'react-router-dom';
+import "../assets/css/productsOnDetail.css";
+import useStore from '../zustand/userInfo';
 
 const ProductOnDetail = ({ cartItems, setCartItems }) => {
+    const { isLoggedIn, userId } = useStore();
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [quantityInCart, setQuantityInCart] = useState(0);
     const [stock, setStock] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -24,6 +28,8 @@ const ProductOnDetail = ({ cartItems, setCartItems }) => {
                 }
             } catch (error) {
                 console.error(error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -37,56 +43,81 @@ const ProductOnDetail = ({ cartItems, setCartItems }) => {
     }, [productId, cartItems]);
 
     const handleAddToCart = () => {
-        if (stock > 0) {
-            setQuantityInCart(quantityInCart + 1);
-            setStock(stock - 1);
+        if (!isLoggedIn) {
+            navigate("/login");
+            return;
+        }
+
+        if (stock > 0 && quantityInCart < product.productQuantity) {
             const updatedCart = [...cartItems];
             const foundIndex = updatedCart.findIndex(item => item.productId === product.productId);
             if (foundIndex !== -1) {
-                updatedCart[foundIndex].quantity += 1;
+                updatedCart[foundIndex].quantity += quantityInCart;
             } else {
-                updatedCart.push({ ...product, quantity: 1 });
+                updatedCart.push({ ...product, quantity: quantityInCart });
             }
             setCartItems(updatedCart);
+            setStock(stock - quantityInCart);
+            setQuantityInCart(0);
         }
     };
 
-    const handleRemoveFromCart = () => {
-        if (quantityInCart > 0) {
-            setQuantityInCart(quantityInCart - 1);
-            setStock(stock + 1);
-            const updatedCart = [...cartItems];
-            const foundIndex = updatedCart.findIndex(item => item.productId === product.productId);
-            if (foundIndex !== -1) {
-                updatedCart[foundIndex].quantity -= 1;
-                if (updatedCart[foundIndex].quantity === 0) {
-                    updatedCart.splice(foundIndex, 1);
+    const handleQuantityChange = (amount) => {
+        const newQuantity = quantityInCart + amount;
+        if (newQuantity >= 0 && newQuantity <= stock) {
+            setQuantityInCart(newQuantity);
+        }
+    };
+    const handleBuy = () => {
+        if (!isLoggedIn) {
+            navigate("/login");
+            return;
+        }
+
+        if (quantityInCart > 0 && quantityInCart <= stock) {
+            navigate('/buy', {
+                state: {
+                    product,
+                    quantity: quantityInCart
                 }
-            }
-            setCartItems(updatedCart);
+            });
         }
     };
 
-    if (!product) {
+
+    if (loading) {
         return <div>Loading...</div>;
     }
 
-    const { productName, productImage, productPrice } = product;
+    if (!product) {
+        return <div>Product not found</div>;
+    }
+
+    const { productName, productImage, productPrice, productExpiry } = product;
 
     return (
         <div className="product-card">
-            <img src={productImage} alt={productName} className="product-image" />
-            <h3 className="product-name">{productName}</h3>
-            <p className="product-price">${productPrice}</p>
-            <p className="product-stock">In Stock: {stock}</p>
-            <div className="quantity-control">
-                <button className="quantity-btn" onClick={handleRemoveFromCart}>-</button>
-                <span className="quantity">{quantityInCart}</span>
-                <button className="quantity-btn" onClick={handleAddToCart}>+</button>
+            <div className="product-image">
+                <img src={productImage} alt={productName} />
             </div>
-            <div className="action-buttons">
-                <button className="buy-btn" onClick={() => alert("Buy button clicked!")}>Buy</button>
-                <button className="cart-btn" onClick={handleAddToCart}>Add to Cart</button>
+
+            <div className="product-details">
+                <h3 className="product-name">{productName}</h3>
+                <p className="product-price">Rs. {productPrice}</p>
+                <p className="product-stock">In Stock: {stock <= 0 ? <span>Out of Stock</span> : stock} </p>
+                <p className="product-expiry">Valid until: {productExpiry}</p>
+
+                <div className="quantity-control">
+                    <p>Quantity: </p>
+                    <button className="quantity-btn" onClick={() => handleQuantityChange(-1)}>-</button>
+                    <span className="quantity">{quantityInCart}</span>
+                    <button className="quantity-btn" onClick={() => handleQuantityChange(1)}>+</button>
+                </div>
+
+                <div className="action-buttons">
+                    <button className="buy-btn" onClick={handleBuy} disabled={stock === 0}>Buy</button>
+                    <button className="cart-btn" onClick={handleAddToCart} disabled={quantityInCart === 0}>Add to Cart</button>
+                </div>
             </div>
         </div>
     );

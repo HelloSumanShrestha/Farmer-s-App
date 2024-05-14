@@ -22,14 +22,13 @@ export default function ProductsByCategory() {
         if (mappedCategoryName) {
             fetch(`http://localhost:8000/products/category/${mappedCategoryName}`)
                 .then(res => res.json())
-                .then(data => { setProducts(data); console.log(data); })
+                .then(data => { setProducts(data) })
         } else {
             console.log("Error fetching the data of " + categoryName);
         }
     }, [categoryName, productsMap])
 
     const handleProductView = (product) => {
-        console.log(product.productId);
         navigate(`/products/${product.productId}`);
     };
 

@@ -16,10 +16,11 @@ class LoginRequest(BaseModel):
 @router.post("/customers/login", tags=["login"])
 async def customer_login(login_request: LoginRequest, conn=Depends(get_connection)):
     async with conn.cursor() as cursor:
-        await cursor.execute("SELECT * FROM customer WHERE customerEmail = %s AND customerPassword = %s", (login_request.email, login_request.password))
+        await cursor.execute("SELECT customerId FROM customer WHERE customerEmail = %s AND customerPassword = %s", 
+                             (login_request.email, login_request.password))
         customer = await cursor.fetchone()
         if customer:
-            return {"message": "Customer logged in successfully"}
+            return {"message": "Customer logged in successfully", "customerId": customer['customerId']}
         else:
             raise HTTPException(status_code=401, detail="Incorrect email or password")
 
@@ -27,9 +28,10 @@ async def customer_login(login_request: LoginRequest, conn=Depends(get_connectio
 @router.post("/sellers/login", tags=["login"])
 async def seller_login(login_request: LoginRequest, conn=Depends(get_connection)):
     async with conn.cursor() as cursor:
-        await cursor.execute("SELECT * FROM seller WHERE sellerEmail = %s AND sellerPassword = %s", (login_request.email, login_request.password))
+        await cursor.execute("SELECT sellerId FROM seller WHERE sellerEmail = %s AND sellerPassword = %s", 
+                             (login_request.email, login_request.password))
         seller = await cursor.fetchone()
         if seller:
-            return {"message": "Seller logged in successfully"}
+            return {"message": "Seller logged in successfully", "sellerId": seller['sellerId']}
         else:
             raise HTTPException(status_code=401, detail="Incorrect email or password")

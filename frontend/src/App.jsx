@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import Layout from './Layout'
 import Home from './pages/landing-pages/Home'
@@ -14,17 +14,29 @@ import ProductsByCategory from './pages/landing-pages/ProductsByCategory'
 import SearchPage from "./pages/landing-pages/SearchPage"
 import ProductOnDetail from './components/ProductOnDetail'
 import ProfileSection from './pages/landing-pages/Profile'
+import UserSignup from './pages/login/signup'
+import useStore from './zustand/userInfo'
+import Buy from './pages/landing-pages/Buy'
+import Orders from './pages/landing-pages/Orders'
 
 function App() {
 
-  const [isLoggedin, setIsLoggedIn] = useState(false)
+  const setProducts = useStore((state) => state.setProducts);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/products")
+      .then(response => response.json())
+      .then(data => setProducts(data))
+      .catch(error => console.error("Failed to fetch products", error));
+  }, [setProducts]);
+
   const [cartItems, setCartItems] = useState([])
 
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route element={<Layout isLoggedIn={isLoggedin} setIsLoggedIn={setIsLoggedIn} />}>
+          <Route element={<Layout />}>
             <Route path='/' element={<Home />} />
 
             <Route path='/home' element={<Home />} />
@@ -40,9 +52,14 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/search/:query" element={<SearchPage />} />
 
-            <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+            <Route path="/login" element={<Login />} />
+
+            <Route path="/buy" element={<Buy />} />
+            <Route path="/orders" element={<Orders />} />
+
+            <Route path="/signup" element={<UserSignup />} />
             {/* Protected Route */}
-            <Route element={<ProtectedRoute isUserLoggedIn={isLoggedin} />}>
+            <Route element={<ProtectedRoute />}>
 
               <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
 

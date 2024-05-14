@@ -4,12 +4,12 @@ import { Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-function Layout({ isLoggedIn, setIsLoggedIn }) {
+function Layout() {
 
     return (
         <>
             <ToastContainer />
-            <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+            <Navbar />
             <Outlet />
         </>
     )

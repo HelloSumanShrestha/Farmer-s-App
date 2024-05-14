@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import useStore from '../../zustand/userInfo';
 
-const ProtectedRoute = ({ isUserLoggedIn }) => {
+const ProtectedRoute = () => {
+    const { isLoggedIn } = useStore()
     const location = useLocation();
     return (
-        isUserLoggedIn ?
+        isLoggedIn ?
             <Outlet />
             : <Navigate
                 to={'/login'}

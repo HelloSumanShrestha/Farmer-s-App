@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import "../../assets/css/Products.css"
 import { useNavigate } from 'react-router-dom';
+import useStore from '../../zustand/userInfo';
 
 export default function AllProducts() {
-
-    const [products, setProducts] = useState()
+    const products = useStore(state => state.products);
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetch("http://localhost:8000/products")
-            .then(res => res.json())
-            .then(data => setProducts(data))
-    },
-        [])
+    const handleProductView = (product) => {
+        navigate(`/products/${product.productId}`);
+    };
 
     return (
         <div className="products">
@@ -26,7 +23,7 @@ export default function AllProducts() {
 
                 {products && products.map(i => {
                     return <>
-                        <div className="product">
+                        <div className="product" onClick={() => handleProductView(i)}>
                             <img src={i.productImage} alt="" />
                             <div className="product-description">
                                 <p>{i.productName}</p>

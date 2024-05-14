@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../../assets/css/Products.css";
 import { useNavigate, useParams } from 'react-router-dom';
 
+
 export default function SearchPage() {
     const { query } = useParams();
     const [products, setProducts] = useState([]);
@@ -18,20 +19,20 @@ export default function SearchPage() {
             });
     }, [query]);
 
-    const handleClick = () => {
-        navigate("/products");
+    const handleProductView = (product) => {
+        console.log(product.productId);
+        navigate(`/products/${product.productId}`);
     };
 
     return (
         <div className="products">
             <div className="product-main">
                 <h2>Search Results for "{query}"</h2>
-                <button onClick={handleClick}>Show All</button>
             </div>
 
             <div className="products-items">
                 {products && products.map(i => (
-                    <div className="product" key={i.productId}>
+                    <div className="product" key={i.productId} onClick={() => handleProductView(i)}>
                         <img src={i.productImage} alt="" />
                         <div className="product-description">
                             <p>{i.productName}</p>

@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import "../assets/css/Products.css"
 import { useNavigate } from 'react-router-dom';
+import useStore from '../zustand/userInfo';
 
 export default function Products() {
 
-    const [products, setProducts] = useState()
-
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetch("http://localhost:8000/products")
-            .then(res => res.json())
-            .then(data => { setProducts(data); console.log(data); })
-    },
-        [])
+    const products = useStore(state => state.products);
 
     const handleClick = () => {
         navigate("/products")
