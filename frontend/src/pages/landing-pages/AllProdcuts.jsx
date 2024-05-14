@@ -65,6 +65,12 @@ export default function AllProducts() {
         productPrice: 350,
         expiryDate: '2024-06-20',
       },
+      {
+        productName: 'Product 10',
+        productImage: 'image_url_10',
+        productPrice: 400,
+        expiryDate: '2024-07-20',
+      },
     ];
 
     let sortedProducts = [...dummyProducts];
