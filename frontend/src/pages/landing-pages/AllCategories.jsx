@@ -40,6 +40,27 @@ export default function AllCategories() {
                     <CategoryCard key={category.id} category={category} shadow={category.bgColor} />
                 ))}
             </div>
-        </div >
-    );
+            
+            {/* Footer */}
+            <div className="footer">
+                <div className="logo">
+                    <span className="sajha">SAJHA</span> <span className="baari">BAARI</span>
+                </div>
+                <div className="contact-info">
+                    <h3>Contact Us</h3>
+                    <p>Email: contact@sajhabaari.com.np</p>
+                    <p>Phone: +977 9840753049</p>
+                    <p>Address: Naxal, Kathmandu, Nepal</p>
+                </div>
+                <div className="helps">
+                    <h3>Helps</h3>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Terms and Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    );        
 }
