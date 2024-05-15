@@ -1,0 +1,27 @@
+/* Add this CSS to your stylesheet */
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: green;
+    color: white;
+}
+
+.orders {
+    width: 80%;
+    height: 90vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    margin: 10vh auto;
+}

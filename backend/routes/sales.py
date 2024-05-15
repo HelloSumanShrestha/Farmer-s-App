@@ -1,10 +1,30 @@
 import aiomysql
 from fastapi import APIRouter, HTTPException, Body, Depends
-from typing import List
+from typing import List, Dict
 from database.database import get_connection
 from models.sales import Sales
 
 router = APIRouter()
+
+
+@router.get("/sales/summary/{seller_id}", response_model=Dict[str, int], tags=["Sales"])
+async def get_sales_summary(seller_id: int, conn=Depends(get_connection)):
+    async with conn.cursor(aiomysql.DictCursor) as cursor:
+        try:
+            # Get total sales amount
+            await cursor.execute("SELECT SUM(price * quantity) AS total_sales FROM sales WHERE sellerId = %s", (seller_id,))
+            total_sales = await cursor.fetchone()
+            
+            # Get total products sold
+            await cursor.execute("SELECT SUM(quantity) AS total_products FROM sales WHERE sellerId = %s", (seller_id,))
+            total_products = await cursor.fetchone()
+
+            return {
+                "total_sales": total_sales["total_sales"] or 0,
+                "total_products": total_products["total_products"] or 0
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error retrieving sales summary: {e}")
 
 @router.post("/sales/", response_model=Sales, tags=["Sales"])
 async def create_sale(sale: Sales, conn=Depends(get_connection)):

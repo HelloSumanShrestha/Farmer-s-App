@@ -1,0 +1,28 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 90vh;
+    margin: 50px;
+}
+
+.metric {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 200px;
+    height: 75px;
+    background: #fff;
+}
+
+.information {
+    width: 100%;
+    justify-content: space-around;
+    display: flex;
+
+}
+
+.recent-products {
+    overflow: hidden;
+    overflow-y: scroll;
+
+}

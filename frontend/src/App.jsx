@@ -58,6 +58,8 @@ function App() {
             <Route path="/orders" element={<Orders />} />
 
             <Route path="/signup" element={<UserSignup />} />
+
+
             {/* Protected Route */}
             <Route element={<ProtectedRoute />}>
 

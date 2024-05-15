@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+.login-form-container {
+    margin: 15px auto;
+    width: 50%;
+    height: 80vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+
+    background: #fff;
+    width: 450px;
+    height: 600px;
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 0px 50px;
+
+    .login-header {
+        margin: 28px 0px;
+    }
+
+    .login-main-text {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 8px 0px;
+        padding: 0;
+    }
+
+    .login-sub-text {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 8px 0px;
+        color: #00000062;
+    }
+
+    .login-textfields {
+        display: flex;
+        gap: 12px;
+        flex-direction: column;
+
+        label {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+    }
+
+    input {
+        width: 350px;
+        height: 40px;
+        font-size: 1rem;
+        text-indent: 12px;
+        border-radius: 8px;
+        border: 1px solid #CDCDCD;
+        outline: none;
+    }
+
+    input[type='checkbox'] {
+        width: 25px;
+        height: 25px;
+        accent-color: var(--green);
+    }
+
+    .signin-btn {
+        width: 350px;
+        height: 40px;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #fff;
+        background: var(--green);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all .25s ease-in-out;
+
+        &:hover {
+            background: green;
+        }
+    }
+
+    .login-to-signup {
+        color: #387668;
+        transition: all .25s ease-in-out;
+
+        &:hover {
+            text-decoration: underline;
+            transition: all .25s ease-in-out;
+            cursor: pointer;
+        }
+    }
+
+    p {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .forgot-password {
+        text-align: end;
+        color: var(--green);
+
+        &:hover {
+            color: #000;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+
+    .show-password {
+        margin: 12px 0;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+
+        .show-password-text {
+            font-weight: 500;
+        }
+    }
+
+}
+
+.go-back {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: gray;
+    margin-top: 12px;
+    /* border: 1px solid red; */
+    /* padding: 12px; */
+    /* margin: 0; */
+}
+
+
+.login-footer {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+
+    p {
+        display: flex;
+        /* gap: 8px; */
+    }
+
+    a {
+        text-decoration: none;
+        color: green;
+    }
+}
+
+.errorLabel {
+    text-align: center;
+    color: red;
+    font-size: 12px;
+}
