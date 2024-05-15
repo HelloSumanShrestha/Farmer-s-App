@@ -51,13 +51,12 @@ async def get_seller(seller_id: int, conn=Depends(get_connection)):
             raise HTTPException(status_code=500, detail="Error retrieving seller")
 
 
-# Update a seller (implement similar logic as update_customer)
 @router.put("/sellers/{seller_id}", response_model=Seller, tags=["Seller"])
 async def update_seller(seller_id: int, seller: Seller, conn=Depends(get_connection)):
     async with conn.cursor() as cursor:
         try:
             sql = """
-                UPDATE customer SET sellerName = %s, sellerEmail = %s, sellerPassword = %s
+                UPDATE seller SET sellerName = %s, sellerEmail = %s, sellerPassword = %s
                 WHERE sellerId = %s
             """
             await cursor.execute(sql, (seller.sellerName, seller.sellerEmail, seller.sellerPassword, seller_id))
@@ -66,7 +65,9 @@ async def update_seller(seller_id: int, seller: Seller, conn=Depends(get_connect
             await conn.commit()
             return seller
         except aiomysql.Error as err:
+            print(err)  # Print the error for debugging purposes
             raise HTTPException(status_code=500, detail="Error updating seller")
+
 
 
 # Delete a seller (implement similar logic as delete_customer)

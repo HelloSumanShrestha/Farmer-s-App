@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import '../assets/css/Home.css';
 import useStore from '../zustand/userInfo';
 
-const Metric = ({ title, value }) => (
-    <div className="metric">
-        <h3>{title}</h3>
-        <p>{value}</p>
+const Metric = ({ title, value, bg }) => (
+    <div className="metric" style={{ background: bg }}>
+        <p>{title}</p>
+        <h3>{value}</h3>
     </div>
 );
 
@@ -37,8 +37,9 @@ const Home = () => {
         <div className="dashboard">
             <div className="information">
 
-                <Metric title="Total Sales" value={`$${summary.total_sales}`} />
-                <Metric title="Total Products Sold" value={summary.total_products} />
+                <Metric title="Total Sales" value={`Rs. ${summary.total_sales}`} />
+                <Metric title="Total Products Sold" value={summary.total_products} bg={"#FFFCF5"} />
+                <Metric title="Total Orders" value={recentProducts.length} bg={"#FDF8FF"} />
             </div>
 
             <div className="recent-products">

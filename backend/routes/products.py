@@ -53,7 +53,7 @@ async def get_product(product_id: int):
     finally:
         await close_connection(connection)
 
-@router.get("/products/{seller_id}", response_model=List[Product], tags=["Products"])
+@router.get("/products/seller/{seller_id}", response_model=List[Product], tags=["Products"])
 async def get_products_by_seller(seller_id: int):
     connection = await get_connection()
     cursor = await connection.cursor()
@@ -119,7 +119,6 @@ async def create_product(product: Product = Body(...)):
 
     finally:
         await close_connection(connection)
-
 @router.put("/products/{product_id}", response_model=Product, tags=["Products"])
 async def update_product(product_id: int, product: Product = Body(...)):
     connection = await get_connection()
@@ -155,10 +154,14 @@ async def update_product(product_id: int, product: Product = Body(...)):
 
         await connection.commit()
 
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=404, detail="Product not found")
+        # Fetch the updated product
+        await cursor.execute("SELECT * FROM products WHERE productId = %s", (product_id,))
+        updated_product = await cursor.fetchone()
 
-        return await get_product(product_id)
+        if not updated_product:
+            raise HTTPException(status_code=404, detail="Product not found after update")
+
+        return dict_to_product(updated_product)
 
     except aiomysql.Error as err:
         print(f"Error updating product: {err}")
@@ -166,6 +169,7 @@ async def update_product(product_id: int, product: Product = Body(...)):
 
     finally:
         await close_connection(connection)
+
 
 @router.delete("/products/{product_id}", response_model=dict, tags=["Products"])
 async def delete_product(product_id: int):
