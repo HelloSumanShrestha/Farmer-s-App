@@ -1,4 +1,5 @@
 .dashboard {
+    width: 80%;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -7,16 +8,25 @@
 }
 
 .metric {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 200px;
+    width: 250px;
     height: 75px;
-    background: #fff;
+
+    padding: 10px;
+    text-align: center;
+
+    border: 1px solid #ccc;
+    border-radius: 12px;
+
+    background: #F8F8FF;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .information {
     width: 100%;
-    justify-content: space-around;
+    justify-content: space-between;
     display: flex;
 
 }
@@ -25,4 +35,9 @@
     overflow: hidden;
     overflow-y: scroll;
 
+
+    h3 {
+        color: gray;
+        margin: 20px;
+    }
 }

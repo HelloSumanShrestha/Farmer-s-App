@@ -25,13 +25,16 @@
 }
 
 .nav-link-active {
-    background-color: #3D9769;
+    background-color: green;
     font-weight: 600;
     color: #fff;
 
 }
 
 .nav-link {
+    font-size: 1rem;
+    border-top: 1px solid gray;
+
     &:hover {
         background-color: #2ecc7072;
     }

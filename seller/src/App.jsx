@@ -4,9 +4,12 @@ import Home from './pages/Home';
 import Orders from './pages/Orders';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Settings from './pages/Settings';
 import Layout from './pages/Layout';
 import useStore from './zustand/userInfo';
+import ProductOnDetail from "./components/ProductOnDetail";
+import Edit from "./pages/Edit";
+import SearchPage from "./pages/SearchPage";
+import Profile from "./pages/Profile";
 import './App.css';
 
 function App() {
@@ -21,8 +24,15 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/products" element={<MyProducts />} />
             <Route path="/orders" element={<Orders />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/products/:productId" element={
+              <ProductOnDetail />} />
+            <Route path="/search/:query" element={<SearchPage />} />
+
+            <Route path="/edit/:productId" element={
+              <Edit />} />
+
           </Route>
         ) : (
           <>

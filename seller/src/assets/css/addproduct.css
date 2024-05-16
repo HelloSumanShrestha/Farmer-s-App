@@ -1,0 +1,66 @@
+.my-products {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.add-product-container {
+    width: 400px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-product-form-container {
+    display: flex;
+    justify-content: center;
+}
+
+.add-product-form {
+    width: 100%;
+}
+
+.add-product-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.add-product-main-text {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.add-product-textfields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.add-product-textfields label {
+    font-weight: bold;
+}
+
+.add-product-textfields input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.add-product-footer {
+    text-align: center;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+
+}
+
+.add-product-btn,
+.cancel-edit-btn {
+    width: 150px;
+    height: 40px;
+}

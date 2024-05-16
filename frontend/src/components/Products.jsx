@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import "../assets/css/Products.css"
+import '../assets/css/Products.css'
 import { useNavigate } from 'react-router-dom';
 import useStore from '../zustand/userInfo';
 
@@ -30,17 +30,15 @@ export default function Products() {
 
             <div className="products-items">
 
-                {products && products.slice(0, 5).map(i => {
-                    return <>
-                        <div className="product" key={i.productId} onClick={() => handleProductView(i)}>
-                            <img src={i.productImage} alt="" />
-                            <div className="product-description">
-                                <p>{i.productName}</p>
-                                <span>Rs. {i.productPrice}</span>
-                            </div>
-                        </div >
-                    </>
-                })}
+                {products && products.slice(0, 5).map((product) => (
+                    <div key={product.productId} className="product" onClick={() => handleProductView(product)}>
+                        <img src={product.productImage} alt="" />
+                        <div className="product-description">
+                            <p>{product.productName}</p>
+                            <span>Rs. {product.productPrice}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div >
     )
