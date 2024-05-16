@@ -1,9 +1,14 @@
 import React from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { FaHome, FaShoppingBag, FaMoneyBill, FaCog } from 'react-icons/fa';
+import { FaBagShopping } from "react-icons/fa6";
+import { AiFillProduct } from "react-icons/ai";
+import { FaUserCircle } from "react-icons/fa";
+
 import "../assets/css/sidebar.css";
 import useStore from "../zustand/userInfo"
 import { CiLogin } from "react-icons/ci";
+import { toast } from 'react-toastify';
 
 export default function Sidebar() {
     const location = useLocation();
@@ -28,7 +33,7 @@ export default function Sidebar() {
                         to="/orders"
                         className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}
                     >
-                        <FaMoneyBill />
+                        <FaBagShopping />
                         <p className="sidebar-links">
                             Orders
                         </p>
@@ -38,27 +43,35 @@ export default function Sidebar() {
                         to="/products"
                         className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}
                     >
-                        <FaShoppingBag />
+                        <AiFillProduct />
                         <p className="sidebar-links">
                             My Products
                         </p>
                     </NavLink>
 
                     <NavLink
-                        to="/settings"
+                        to="/profile"
                         className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}
                     >
-                        <FaCog />
+                        <FaUserCircle />
                         <p className="sidebar-links">
-                            Settings
+                            Profile
                         </p>
                     </NavLink>
 
-                    <li onClick={logOut}>
+                    <li onClick={() => {
+
+                        {
+                            logOut(),
+                                toast.success("Log out successful!")
+                        }
+                    }
+                    }
+                    >
                         <CiLogin /> Log out
                     </li>
                 </div>
-            </div>
+            </div >
             <Outlet />
         </>
     );
