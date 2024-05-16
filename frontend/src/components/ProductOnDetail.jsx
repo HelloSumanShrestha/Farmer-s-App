@@ -4,7 +4,7 @@ import "../assets/css/productsOnDetail.css";
 import useStore from '../zustand/userInfo';
 
 const ProductOnDetail = ({ cartItems, setCartItems }) => {
-    const { isLoggedIn, userId } = useStore();
+    const { isLoggedIn } = useStore();
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [quantityInCart, setQuantityInCart] = useState(0);
@@ -68,6 +68,7 @@ const ProductOnDetail = ({ cartItems, setCartItems }) => {
             setQuantityInCart(newQuantity);
         }
     };
+
     const handleBuy = () => {
         if (!isLoggedIn) {
             navigate("/login");
@@ -75,7 +76,7 @@ const ProductOnDetail = ({ cartItems, setCartItems }) => {
         }
 
         if (quantityInCart > 0 && quantityInCart <= stock) {
-            navigate('/buy', {
+            navigate('/payment-method', {
                 state: {
                     product,
                     quantity: quantityInCart
@@ -83,7 +84,6 @@ const ProductOnDetail = ({ cartItems, setCartItems }) => {
             });
         }
     };
-
 
     if (loading) {
         return <div>Loading...</div>;

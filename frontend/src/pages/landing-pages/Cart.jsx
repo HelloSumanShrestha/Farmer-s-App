@@ -24,27 +24,16 @@ export default function Cart({ cartItems = [], setCartItems }) {
         navigate("/products")
     }
 
-
-    const incrementQuantity = (productId) => {
-        const newCartItems = cartItems.map(item => {
-            if (item.productId === productId) {
-                return { ...item, productQuantity: item.productQuantity + 1 };
+    const handleProceedToPayment = (product) => {
+        handleRemoveItem(product.productId)
+        navigate("/payment-method", {
+            state:
+            {
+                product: product,
+                quantity: product.productQuantity
             }
-            return item;
         });
-        setCartItems(newCartItems);
     };
-
-    const decrementQuantity = (productId) => {
-        const newCartItems = cartItems.map(item => {
-            if (item.productId === productId && item.productQuantity > 1) {
-                return { ...item, productQuantity: item.productQuantity - 1 };
-            }
-            return item;
-        });
-        setCartItems(newCartItems);
-    };
-
 
     return (
         <div className="cart">
@@ -52,7 +41,7 @@ export default function Cart({ cartItems = [], setCartItems }) {
                 <ul>
                     {cartItems.map(item => (
                         <li key={item.productId} className="cart-item">
-                            <img src={item.productImage} alt={item.productName} className="cart-item-image" />
+                            <img src={item.productImage} alt={item.productName} className="cart-item-image" onClick={() => handleProceedToPayment(item)} />
 
                             <div className="cart-item-info">
 
@@ -81,9 +70,7 @@ export default function Cart({ cartItems = [], setCartItems }) {
                 cartItems.length > 0 && <>
                     <div className="checkout">
                         <p>Total Amount : <strong>Rs. {totalPrice}</strong></p>
-                        {/* <button onClick={alert("")}>
-                            Buy
-                        </button> */}
+
                     </div>
                 </>
             }

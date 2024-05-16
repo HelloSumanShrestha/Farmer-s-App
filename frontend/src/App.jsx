@@ -18,6 +18,7 @@ import UserSignup from './pages/login/signup'
 import useStore from './zustand/userInfo'
 import Buy from './pages/landing-pages/Buy'
 import Orders from './pages/landing-pages/Orders'
+import PaymentMethod from "./pages/landing-pages/PaymentMethod"
 
 function App() {
 
@@ -59,6 +60,7 @@ function App() {
 
             <Route path="/signup" element={<UserSignup />} />
 
+            <Route path="/payment-method" element={<PaymentMethod />} />
 
             {/* Protected Route */}
             <Route element={<ProtectedRoute />}>

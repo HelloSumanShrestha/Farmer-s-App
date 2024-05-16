@@ -78,3 +78,8 @@ li {
         font-size: 1.05rem;
     }
 }
+
+.toast-container {
+    z-index: 9999;
+    /* Or any high enough value */
+}
