@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import "../../assets/css/Products.css"
 import { useNavigate } from 'react-router-dom';
 import useStore from '../../zustand/userInfo';
+import Footer from '../landing-pages/Footer';
 
 export default function AllProducts() {
     const products = useStore(state => state.products);
@@ -33,6 +34,6 @@ export default function AllProducts() {
                     </>
                 })}
             </div>
-        </div>
+        </div> 
     )
 }

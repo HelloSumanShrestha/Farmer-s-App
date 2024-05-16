@@ -2,7 +2,7 @@ import React, { } from 'react';
 import { Button } from '@mui/material';
 import CategoryCard from "../../components/CategoryCard"
 import { useNavigate } from 'react-router-dom';
-
+import Footer from '../landing-pages/Footer';
 import meat from "../../assets/categories/meat.png";
 import vegetables from "../../assets/categories/vagetable.png";
 import fruits from "../../assets/categories/fruits.png";

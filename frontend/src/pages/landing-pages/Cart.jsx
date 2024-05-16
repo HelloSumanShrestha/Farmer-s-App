@@ -81,9 +81,9 @@ export default function Cart({ cartItems = [], setCartItems }) {
                 cartItems.length > 0 && <>
                     <div className="checkout">
                         <p>Total Amount : <strong>Rs. {totalPrice}</strong></p>
-                        {/* <button onClick={alert("")}>
+                        <button onClick={alert("")}>
                             Buy
-                        </button> */}
+                        </button>
                     </div>
                 </>
             }
