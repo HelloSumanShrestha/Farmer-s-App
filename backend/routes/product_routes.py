@@ -5,12 +5,14 @@ from datetime import datetime
 from models.add_items import Add_items
 from models.update_items import Update_items
 from models.delete_product import Delete_product
+from models.UserRequest import UserRequest
 from bson import ObjectId
 from config.database import product_name
 from config.database import customer_db
 from config.database import seller_db
 from config.database import collection_name
 import uuid
+from uuid import uuid4
 
 product_router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -75,9 +77,9 @@ async def process_order(product_id: str, quantity: int, user_id: str):
         # Update the quantity of the selected product
         new_quantity = product["Quantity"] - quantity
         product_name.update_one({"Product_ID": product_id}, {"$set": {"Quantity": new_quantity}})
-        
+
         # Generate a random order_id
-        order_id = str(uuid.uuid4())
+        order_id = str(uuid4())
 
         # Get customer name
         customer = collection_name.find_one({"user_id": user_id})
@@ -92,6 +94,9 @@ async def process_order(product_id: str, quantity: int, user_id: str):
             raise HTTPException(status_code=404, detail=f"Seller with ID '{seller_id}' not found")
         seller_name = seller["fullname"]
 
+        # Calculate the total cost
+        total_cost = product["Price"] * quantity
+
         # Check if the order already exists
         existing_order = customer_db.find_one({
             "Customer_ID": user_id,
@@ -102,13 +107,14 @@ async def process_order(product_id: str, quantity: int, user_id: str):
         if existing_order:
             # If order exists, update the quantity for both customer and seller
             updated_quantity = existing_order["Quantity"] + quantity
+            new_total_cost = updated_quantity * product["Price"]
             customer_db.update_one({
                 "Customer_ID": user_id,
                 "Seller_ID": seller_id,
                 "Product_ID": product_id
-            }, {"$set": {"Quantity": updated_quantity}})
+            }, {"$set": {"Quantity": updated_quantity, "Total_Cost": new_total_cost}})
 
-            # Update quantity in seller_db
+            # Update quantity in seller_db and earnings
             seller_order = seller_db.find_one({
                 "Seller_ID": seller_id,
                 "Customer_ID": user_id,
@@ -119,13 +125,13 @@ async def process_order(product_id: str, quantity: int, user_id: str):
                     "Seller_ID": seller_id,
                     "Customer_ID": user_id,
                     "Product_ID": product_id
-                }, {"$set": {"Quantity": updated_quantity}})
+                }, {"$set": {"Quantity": updated_quantity, "Earnings": new_total_cost}})
             else:
                 raise HTTPException(status_code=500, detail="Order exists in customer_db but not in seller_db")
         else:
             # Store the order in the database with the generated order_id
             order_data = {
-                "order_id": order_id,  # Assign the random order_id
+                "order_id": order_id,
                 "Customer_ID": user_id,
                 "Customer_Name": customer_name,
                 "Seller_ID": seller_id,
@@ -135,16 +141,17 @@ async def process_order(product_id: str, quantity: int, user_id: str):
                 "Price": product["Price"],
                 "Category": product["Category"],
                 "Quantity": quantity,
+                "Total_Cost": total_cost,
                 "Expiry_Date": product["Expiry_Date"],
                 "Manufacture_Date": product["Manufacture_Date"],
                 "Img_URL": product["Img_URL"],
-                "order": "Pending"  
+                "order": "Pending"
             }
             customer_db.insert_one(order_data)
 
-            # Insert order into seller_collection with the same order_id
+            # Insert order into seller_collection with the same order_id and earnings
             seller_order_data = {
-                "order_id": order_id,  
+                "order_id": order_id,
                 "Seller_ID": seller_id,
                 "Seller_Name": seller_name,
                 "Customer_ID": user_id,
@@ -154,10 +161,11 @@ async def process_order(product_id: str, quantity: int, user_id: str):
                 "Price": product["Price"],
                 "Category": product["Category"],
                 "Quantity": quantity,
+                "Earnings": total_cost,
                 "Expiry_Date": product["Expiry_Date"],
                 "Manufacture_Date": product["Manufacture_Date"],
                 "Img_URL": product["Img_URL"],
-                "order": "Pending" 
+                "order": "Pending"
             }
             seller_db.insert_one(seller_order_data)
 
@@ -216,7 +224,7 @@ def get_seller(seller_id: str):
 @product_router.get("/seller_products/{seller_id}", tags=["Product"])
 async def get_seller_products(seller_id: str):
     try:
-        current_date = datetime.utcnow()  # Get current date and time
+        current_date = datetime.utcnow()   
 
         products_cursor = product_name.find({"Seller_ID": seller_id})
 
@@ -313,6 +321,34 @@ async def read_items(skip: int = 0, limit: int = 10):
                 product_info_list.append(product_info)
 
         return product_info_list
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@product_router.post("/get||bought_products", tags=["Order"])
+async def get_sold_bought_products(user_request: UserRequest):
+    try:
+        usertype = user_request.usertype.lower()
+        user_id = user_request.user_id
+
+        if usertype not in ["customer", "seller"]:
+            raise HTTPException(status_code=400, detail="Invalid user type. Must be 'customer' or 'seller'.")
+
+        if usertype == "customer":
+            # Query customer_db for completed orders
+            completed_orders_count = customer_db.count_documents({
+                "Customer_ID": user_id,
+                "order": "Completed"
+            })
+            return {"message": "Number of products bought", "count": completed_orders_count}
+
+        elif usertype == "seller":
+            # Query seller_db for completed orders
+            completed_orders_count = seller_db.count_documents({
+                "Seller_ID": user_id,
+                "order": "Completed"
+            })
+            return {"message": "Number of products sold", "count": completed_orders_count}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

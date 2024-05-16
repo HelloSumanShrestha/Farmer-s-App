@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, status
 from config.database import customer_db, seller_db, collection_name
 from bson import ObjectId
 
@@ -77,3 +77,12 @@ async def get_user_info(user_type: str = Query(..., description="Type of user (c
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@admin_router.get("/count", tags=["Admin"])
+async def get_user_counts():
+    try:
+        customer_count = collection_name.count_documents({"usertype": "Customer"})
+        seller_count = collection_name.count_documents({"usertype": "Seller"})
+        return {"customer_count": customer_count, "seller_count": seller_count}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

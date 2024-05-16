@@ -3,5 +3,5 @@ from pydantic import BaseModel
 class UserUpdate(BaseModel):
     fullname: str 
     username: str
-    address: str 
+    Address: str 
     profile_picture: str
