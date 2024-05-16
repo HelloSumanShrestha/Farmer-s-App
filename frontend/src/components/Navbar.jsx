@@ -11,7 +11,7 @@ export default function Navbar() {
     const { isLoggedIn, logOut } = useStore();
 
     const handleSellerClick = () => {
-        window.location.href = "http://localhost:5175/signup";
+        window.location.href = "http://localhost:5174/signup";
     };
 
     return (

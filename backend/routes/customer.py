@@ -6,12 +6,6 @@ from models.customer import Customer
 
 router = APIRouter()
 
-# Function to remove password from customer data
-def remove_password(customer_data: dict) -> dict:
-    if "customerPassword" in customer_data:
-        del customer_data["customerPassword"]
-    return customer_data
-
 @router.post("/customers/create", response_model=Customer, tags=["Customer"])
 async def create_customer(customer: Customer, conn=Depends(get_connection)):
     async with conn.cursor() as cursor:
@@ -25,7 +19,6 @@ async def create_customer(customer: Customer, conn=Depends(get_connection)):
             return customer
         except aiomysql.Error as err:
             raise HTTPException(status_code=500, detail="Error creating customer")
-
 
 @router.get("/customers/", response_model=list[Customer], tags=["Customer"])
 async def get_customer_list(conn=Depends(get_connection)):
@@ -65,7 +58,6 @@ async def update_customer(customer_id: int, customer: Customer, conn=Depends(get
             return customer
         except aiomysql.Error as err:
             raise HTTPException(status_code=500, detail="Error updating customer")
-
 
 # Delete a customer
 @router.delete("/customers/{customer_id}", tags=["Customer"])

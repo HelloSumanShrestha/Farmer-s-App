@@ -3,10 +3,11 @@ import Swipe from '../../components/Swipe';
 import { GiFruitBowl, GiCarrot, GiMeat, GiFrozenOrb } from "react-icons/gi";
 import { FaWineBottle } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
-
+import Testimonials from "../landing-pages/Testimonials"
 import Products from '../../components/Products';
 import PopularCategories from '../../components/PopularCategories';
 import OurTeam from "./OurTeam"
+import Footer from "./Footer"
 
 function Home() {
     return (
@@ -47,6 +48,8 @@ function Home() {
             <PopularCategories />
             <Products />
             <OurTeam />
+            <Testimonials/>
+            <Footer/>
         </>
     );
 }

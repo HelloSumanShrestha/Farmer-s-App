@@ -1,0 +1,202 @@
+.sb-footer-section-padding {
+    padding: 1rem 1rem;
+}
+
+.footer {
+    background-color: green;
+    padding: 0;
+}
+
+.sb-footer {
+    display: flex;
+    flex-direction: column;
+}
+
+.sb-footer-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.sb-footer-links-div {
+    width: 220px;
+    margin: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    color: white;
+}
+
+a {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    transition: color 0.3s, transform 0.3s;
+}
+
+a:hover {
+    color: #cfcf07; /* Change color on hover */
+    transform: scale(1.05); 
+}
+
+.socialmedia {
+    display: flex;
+    flex-direction: row;
+}
+
+.socialmedia img {
+    width: 80%;
+    transition: transform 0.3s ease; /* Add smooth transition on hover */
+}
+
+.socialmedia img:hover {
+    transform: scale(1.4); /* Increase size on hover */
+}
+
+.sb-footer-links-div h4 {
+    font-size: 20px;
+    line-height: 17px;
+    margin-bottom: 0.9rem;
+}
+
+.sb-footer-links-div p {
+    font-size: 14px;
+    line-height: 15px;
+    margin: 0.9rem 0;
+    cursor: pointer;
+}
+
+.sb-footer-below {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0.2rem;
+}
+
+.sb-footer-below-links {
+    display: flex;
+    flex-direction: row;
+}
+
+.sb-footer-below-links p {
+    font-size: 13px;
+    line-height: 15px;
+    margin-left: 2rem;
+    color: white;
+    font-weight: 600;
+}
+
+.hr {
+    color: white !important;
+    width: 100%;
+}
+
+.sb-footer-copyright p {
+    font-size: 13px;
+    line-height: 15px;
+    color: white;
+    font-weight: 600;
+}
+
+.sb-footer-links-div form {
+    max-width: 245px;
+    width: 100%;
+  }
+  
+  .form-group {
+    margin-bottom: 0.8rem;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    line-height: 18px;
+    color: #ffffff;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+    height: 75px; 
+  }
+  
+  button[type="submits"] {
+    padding: 0.4rem 0.8rem;
+    font-size: 13px;
+    line-height: 16px;
+    border-radius: 5px;
+    background-color: #024249;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  }
+  
+  button[type="submits"]:hover {
+    background-color: #afaf03;
+    color: #fff;
+    transform: scale(1.05);
+  }
+  
+  .form-group input:hover,
+  .form-group textarea:hover {
+    border-color: #484800;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+
+@media screen and (max-width: 768px) {
+    .sb-footer-heading h1 {
+        font-size: 44px;
+        line-height: 50px;
+    }
+
+    .sb-footer-heading h1 {
+        font-size: 34px;
+        line-height: 42px;
+    }
+
+    .sb-footer-links div {
+        margin: 1rem 0;
+    }
+
+    .sb-footer-btn p {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .sb-footer-below {
+        flex-direction: column;
+        justify-content: left;
+    }
+
+    .sb-footer-below-links {
+        flex-direction: column;
+    }
+
+    .sb-footer-below-links p {
+        margin-left: 0rem;
+        margin-top: 1rem;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .sb-footer-heading h1 {
+        font-size: 27px;
+        line-height: 38px;
+    }
+}

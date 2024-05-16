@@ -53,6 +53,7 @@ function OurTeam() {
                 </div>
             </div>
         </section>
+        
     );
 };
 

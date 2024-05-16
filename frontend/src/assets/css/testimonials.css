@@ -1,0 +1,100 @@
+/* testimonials.css */
+
+.testimonial-container {
+    max-width: 1000px;
+    margin: 50px auto; /* Increased top and bottom margin */
+    padding: 80px 0; /* Increased top and bottom padding */
+  }
+  
+  /* The rest of your existing CSS styles remain unchanged */
+  .title {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .title h2 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .title p {
+    font-size: 18px;
+    color: #666;
+  }
+  
+  .slider-container {
+    position: relative;
+  }
+  
+  blockquote {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: -1;
+  }
+  
+  .top-quote,
+  .bottom-quote {
+    width: 30px;
+    height: auto;
+  }
+  
+  .slider-container .splide__list {
+    overflow: visible;
+  }
+  
+  .splide__slide {
+    padding: 30px; /* Increased padding */
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 300px; /* Increased height */
+  }
+  
+  .review-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: block;
+  }
+  
+  .content {
+    margin-bottom: 20px;
+    height: calc(100% - 130px); /* Adjusted height */
+    overflow-y: auto; /* Added overflow-y for scrolling if needed */
+  }
+  
+  .text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px; /* Added margin-top */
+  }
+  
+  .rating {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    margin-top: 5px; /* Added margin-top */
+  }
+  
+  .star {
+    color: #ffd700;
+    margin-right: 3px;
+  }
+  
+  .user {
+    font-size: 14px;
+    color: #888;
+  }
+  
