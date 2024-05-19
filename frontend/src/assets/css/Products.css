@@ -68,6 +68,7 @@
         }
     }
 }
+
 .products {
     width: 80%;
 
@@ -101,7 +102,9 @@
             font-size: 1rem;
         }
     }
+
     .product-main select {
+        width: 200px;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 10px;
@@ -110,24 +113,24 @@
         transition: all 0.3s;
         cursor: pointer;
         outline: none;
-      }
-      
-      .product-main select:hover,
-      .product-main select:focus {
+    }
+
+    .product-main select:hover,
+    .product-main select:focus {
         padding: 12px;
         border-color: #007bff;
         border-radius: 10px;
-      }
-      
-      .product-main select option:hover {
+    }
+
+    .product-main select option:hover {
         background-color: #007bff;
         color: white;
         cursor: pointer;
         border-radius: 10px;
-      }
-      
-      
-      
+    }
+
+
+
     .products-items {
         display: flex;
         flex-wrap: wrap;
@@ -160,6 +163,6 @@
                     color: green;
                 }
             }
-        }   
+        }
     }
 }
