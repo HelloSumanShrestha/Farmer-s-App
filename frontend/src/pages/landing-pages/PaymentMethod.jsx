@@ -48,7 +48,7 @@ export default function PaymentMethod() {
             if (response.ok) {
                 toast.success("Purchase Successful!", { autoClose: 1000 });
                 setTimeout(() => {
-                    navigate('/orders');
+                    navigate('/products');
                 }, 2000);
             } else {
                 const errorData = await response.json();

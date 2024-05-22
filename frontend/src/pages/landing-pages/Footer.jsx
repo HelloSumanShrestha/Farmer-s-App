@@ -49,10 +49,10 @@ function Footer() {
           <div className="sb-footer-links-div">
             <h4>Follow us on</h4>
             <div className="socialmedia">
-              <p><img src={fb} alt=''/></p>
-              <p><img src={twitter} alt=''/></p>
-              <p><img src={LinkedIn} alt=''/></p>
-              <p><img src={inst} alt=''/></p>
+              <p><img src={fb} alt='' /></p>
+              <p><img src={twitter} alt='' /></p>
+              <p><img src={LinkedIn} alt='' /></p>
+              <p><img src={inst} alt='' /></p>
             </div>
           </div>
           {/* Contact Form */}

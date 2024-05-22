@@ -36,11 +36,14 @@ a {
     color: rgb(255, 255, 255);
     text-decoration: none;
     transition: color 0.3s, transform 0.3s;
+
+    p {
+        font-size: 1.2rem;
+    }
 }
 
 a:hover {
-    color: #cfcf07; /* Change color on hover */
-    transform: scale(1.05); 
+    color: #cfcf07;
 }
 
 .socialmedia {
@@ -50,11 +53,13 @@ a:hover {
 
 .socialmedia img {
     width: 80%;
-    transition: transform 0.3s ease; /* Add smooth transition on hover */
+    transition: transform 0.3s ease;
+    /* Add smooth transition on hover */
 }
 
 .socialmedia img:hover {
-    transform: scale(1.4); /* Increase size on hover */
+    transform: scale(1.4);
+    /* Increase size on hover */
 }
 
 .sb-footer-links-div h4 {
@@ -105,20 +110,20 @@ a:hover {
 .sb-footer-links-div form {
     max-width: 245px;
     width: 100%;
-  }
-  
-  .form-group {
+}
+
+.form-group {
     margin-bottom: 0.8rem;
-  }
-  
-  .form-group label {
+}
+
+.form-group label {
     font-size: 14px;
     line-height: 18px;
     color: #ffffff;
-  }
-  
-  .form-group input,
-  .form-group textarea {
+}
+
+.form-group input,
+.form-group textarea {
     width: 100%;
     padding: 0.3rem;
     border: 1px solid #ccc;
@@ -126,14 +131,14 @@ a:hover {
     font-size: 13px;
     line-height: 16px;
     transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .form-group textarea {
+}
+
+.form-group textarea {
     resize: vertical;
-    height: 75px; 
-  }
-  
-  button[type="submits"] {
+    height: 75px;
+}
+
+button[type="submits"] {
     padding: 0.4rem 0.8rem;
     font-size: 13px;
     line-height: 16px;
@@ -143,21 +148,21 @@ a:hover {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s, transform 0.3s;
-  }
-  
-  button[type="submits"]:hover {
+}
+
+button[type="submits"]:hover {
     background-color: #afaf03;
     color: #fff;
     transform: scale(1.05);
-  }
-  
-  .form-group input:hover,
-  .form-group textarea:hover {
+}
+
+.form-group input:hover,
+.form-group textarea:hover {
     border-color: #484800;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  
+}
+
+
 
 @media screen and (max-width: 768px) {
     .sb-footer-heading h1 {

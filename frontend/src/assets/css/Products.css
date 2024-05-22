@@ -21,7 +21,7 @@
         }
 
         button {
-            width: 100px;
+            width: 150px;
             height: 40px;
 
             border: 1px solid var(--green);
@@ -30,6 +30,7 @@
             cursor: pointer;
             background: #fff;
             font-size: 1rem;
+            color: #000;
         }
     }
 
@@ -91,7 +92,7 @@
         }
 
         button {
-            width: 100px;
+            width: 150px;
             height: 40px;
 
             border: 1px solid var(--green);

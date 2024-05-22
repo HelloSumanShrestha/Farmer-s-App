@@ -5,7 +5,7 @@ async def get_connection():
         host="localhost",
         user="root",
         password="",
-        db="farmerapp",
+        db="farmersapp",
         cursorclass=aiomysql.DictCursor
     )
     return connection
