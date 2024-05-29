@@ -48,7 +48,7 @@ const ProductOnDetail = ({ cartItems, setCartItems }) => {
             return;
         }
 
-        if (stock > 0 && quantityInCart < product.productQuantity) {
+        if (stock > 0 && quantityInCart > 0) {
             const updatedCart = [...cartItems];
             const foundIndex = updatedCart.findIndex(item => item.productId === product.productId);
             if (foundIndex !== -1) {

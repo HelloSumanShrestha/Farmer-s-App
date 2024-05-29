@@ -10,8 +10,8 @@ import "../assets/css/Login.css"
 
 
 export default function Login() {
-    const [email, setEmail] = useState('iamsuman066@gmail.com');
-    const [password, setPassword] = useState('hellosuman');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
     const { logIn } = useStore();

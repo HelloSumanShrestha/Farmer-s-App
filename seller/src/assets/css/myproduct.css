@@ -8,6 +8,8 @@
 
 .seller-products {
 
+    width: 100%;
+
     .seller-products-header {
 
         display: flex;

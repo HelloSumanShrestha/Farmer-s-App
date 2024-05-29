@@ -7,8 +7,8 @@ import { Link } from 'react-router-dom';
 import useStore from '../../zustand/userInfo';
 
 export default function Login() {
-    const [email, setEmail] = useState('sajan@gmail.com');
-    const [password, setPassword] = useState('helloworld');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
     const { logIn } = useStore();

@@ -4,11 +4,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Cart({ cartItems = [], setCartItems }) {
-
-    const [totalPrice, setTotalPrice] = useState(0)
-
+    const [totalPrice, setTotalPrice] = useState(0);
     const navigate = useNavigate();
-
 
     const handleRemoveItem = (productId) => {
         setCartItems(cartItems.filter(item => item.productId !== productId));
@@ -19,18 +16,16 @@ export default function Cart({ cartItems = [], setCartItems }) {
         setTotalPrice(newTotalPrice);
     }, [cartItems]);
 
-
     const handleShopping = () => {
-        navigate("/products")
-    }
+        navigate("/products");
+    };
 
     const handleProceedToPayment = (product) => {
-        handleRemoveItem(product.productId)
+        handleRemoveItem(product.productId);
         navigate("/payment-method", {
-            state:
-            {
+            state: {
                 product: product,
-                quantity: product.productQuantity
+                quantity: product.quantity
             }
         });
     };
@@ -42,38 +37,26 @@ export default function Cart({ cartItems = [], setCartItems }) {
                     {cartItems.map(item => (
                         <li key={item.productId} className="cart-item">
                             <img src={item.productImage} alt={item.productName} className="cart-item-image" onClick={() => handleProceedToPayment(item)} />
-
                             <div className="cart-item-info">
-
                                 <h2>{item.productName}</h2>
-                                <p>Rs.{item.productPrice}</p>
-                                <p>Quantity : {item.productQuantity}</p>
-
-                                <button onClick={() => handleRemoveItem(item.productId)} className="remove-item">
-                                    Remove
-                                </button>
-
+                                <p>Rs. {item.productPrice}</p>
+                                <p>Quantity: {item.quantity}</p>
+                                <button onClick={() => handleRemoveItem(item.productId)} className="remove-item">Remove</button>
                             </div>
                         </li>
                     ))}
                 </ul>
             ) : (
                 <div className='information'>
-                    <p>
-                        There is no items in the cart.
-                    </p>
+                    <p>There are no items in the cart.</p>
                     <button onClick={handleShopping}>Continue Shopping</button>
                 </div>
             )}
-
-            {
-                cartItems.length > 0 && <>
-                    <div className="checkout">
-                        <p>Total Amount : <strong>Rs. {totalPrice}</strong></p>
-
-                    </div>
-                </>
-            }
+            {cartItems.length > 0 && (
+                <div className="checkout">
+                    <p>Total Amount: <strong>Rs. {totalPrice}</strong></p>
+                </div>
+            )}
         </div>
     );
 }
